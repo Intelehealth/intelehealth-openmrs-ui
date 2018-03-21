@@ -1,1 +1,1 @@
-# intelehealth-openmrs-ui
+Cleaned Up Intelehealth OpenMRS Module

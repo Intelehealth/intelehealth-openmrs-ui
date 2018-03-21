@@ -1,0 +1,24 @@
+*.class
+*.iml
+*.idea
+.settings
+.project
+.classpath
+*.sass-cache
+target
+
+.DS_Store
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+omod/src/main/compass/sass-external/*
+
+# Rubygems build directories #
+omod/.rubygems
+omod/.rubygems-provided
+C:/Users/maitree\.kuria/openmrs/rsplserver/owa/
+
+C:/
