@@ -1,21 +1,8 @@
 <%
-    config.require("formFieldName")
-    ui.includeJavascript("uicommons", "angular.min.js")
     ui.includeJavascript("intelehealth", "diagnoses/diagnoses.js")
-    ui.includeJavascript("intelehealth", "diagnoses/diagnoses-angular.js")
-    ui.includeCss("coreapps", "diagnoses/encounterDiagnoses.css")
 %>
 
-
 <style>
-hr.style1{
-	border-top: 1px solid #8c8b8b;
-}
-div.error{background-color: #d9edf7;
-  color: #31708f;padding: 15px;
-  margin-bottom: 10px;border: 1px solid transparent;border-radius: 4px;
-  margin-top: 0;  color: inherit
-}
 .sr-only {
     position: absolute;
     width: 1px;
@@ -75,8 +62,18 @@ button.close {
     background: 0 0;
     border: 0
 }
-</style>
 
+.labelspace{
+  display: inline !important;
+  vertical-align: baseline !important;
+}
+
+.radioclass{
+  display: block !important;
+  font-size: 1.5em !important;
+  padding: 0px;
+  margin: 0px;
+}
 </style>
 
 <% /* This is an underscore template, since I dont know how to use angular templates programmatically */ %>
@@ -100,60 +97,47 @@ button.close {
     </span>
     {{ } }}
 </script>
-<div class="info-body" ng-show="visitStatus">
-    <script type="text/ng-template" id="selected-diagnosis" ng-show="visitStatus">
-        <div class="diagnosis" data-ng-class="{primary: d.primary}">
-            <span class="code">
-                <span data-ng-show="d.diagnosis.code">{{ d.diagnosis.code }}</span>
-                <span data-ng-show="!d.diagnosis.code && d.diagnosis.concept">
-                    ${ui.message("coreapps.consult.codedButNoCode")}
-                </span>
-                <span data-ng-show="!d.diagnosis.code && !d.diagnosis.concept">
-                    ${ui.message("coreapps.consult.nonCoded")}
-                </span>
-            </span>
-            <strong class="matched-name">{{ d.diagnosis.matchedName }}</strong>
-            <span class="preferred-name" data-ng-show="d.diagnosis.preferredName">
-                <small>${ui.message("coreapps.consult.synonymFor")}</small>
-                <span>{{ d.diagnosis.concept.preferredName }}</span>
-            </span>
 
-            <div class="actions">
-                <label>
-                    <input type="checkbox" data-ng-model="d.primary" />
-                    ${ui.message("coreapps.Diagnosis.Order.PRIMARY")}
-                </label>
-                <label>
-                    <input type="checkbox" data-ng-model="d.confirmed"/>
-                    ${ui.message("coreapps.Diagnosis.Certainty.CONFIRMED")}
-                </label>
-            </div>
-        </div>
-        <i data-ng-click="removeDiagnosis(d)" tabindex="-1" class="icon-remove delete-item"></i>
-    </script>
-</div>
 <div id="diagnosis" class="long-info-section" ng-controller="DiagnosesController">
         	<div class="info-header">
         		<i class="icon-diagnosis"></i>
         		<h3>Diagnoses</h3>
         	</div>
         	<div class="info-body">
-        	    <form ng-show="visitStatus" id="new-order" class="sized-inputs css-form" name="newOrderForm" novalidate>
         		<br/>
         		<input type="text" ng-model="addMe1" autocomplete itemFormatter="autocomplete-render-item"  class="form-control">
         		<button type="button" class='btn btn-default' ng-click="addAlert()">Add Diagnosis</button>
         		<p>{{errortext}}</p>
+            <br/>
         		<br/>
-          <div ng-show = "addMe1">
-            <input type='text' ng-model= "abc" placeholder="Primary/Secondary">
-            <input type='text' ng-model= "def" placeholder="Confirmed/Certainty">
+            <div class = 'radioclass'>
+            <label class = 'labelspace'>
+  						<input type="radio" value="Primary" ng-model="prisec">
+  						  Primary
+					  </label>
+            <label class = 'labelspace' style = " margin-left: 30px !important; ">
+      				<input type="radio" value="Secondary" ng-model="prisec">
+      				  Secondary
+  		      </label>
+            <br/>
+            <label class = 'labelspace' >
+              <input type="radio" value="Confirmed" ng-model="confirm">
+                Confirmed
+            </label>
+            <label class = 'labelspace'>
+              <input type="radio" value="Certain" ng-model="confirm">
+                Certain
+            </label>
           </div>
+
           </br>
         		<div uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + (alert.type || 'info')" close="closeAlert(\$index)">{{alert.msg}}</div>
         	</div>
+        </div>
             <div>
                 <a href="#" class="right back-to-top">Back to top</a>
             </div>
+            <br/>
         </div>
 
 <script>
@@ -215,12 +199,12 @@ var app = angular.module('diagnoses', []);
         }
     });
     app.controller('DiagnosesController', [ '\$scope', '\$http' , '\$timeout', 'DiagnosisFactory1', 'recentVisitFactory',
-        function DiagnosesController(\$scope, \$http, \$timeout, DiagnosisFactory1, recentVisitFactory) {
-          \$scope.alerts = [];
-          \$scope.respuuid = [];
-          var _selected;
-          var patient = "${ patient.uuid }";
-          var date2 = new Date();
+      function DiagnosesController(\$scope, \$http, \$timeout, DiagnosisFactory1, recentVisitFactory) {
+        \$scope.alerts = [];
+        \$scope.respuuid = [];
+        var _selected;
+        var patient = "${ patient.uuid }";
+        var date2 = new Date();
         var path = window.location.search;
         var i = path.indexOf("visitId=");
         var visitId = path.substr(i + 8, path.length);
@@ -309,18 +293,19 @@ var app = angular.module('diagnoses', []);
     		return \$scope.data;
       	});
       	promise.then(function(x){
+          \$scope.prisec = 'Primary';
       		\$scope.addAlert = function() {
             		\$scope.errortext = "";
     			var alertText = "";
     			\$scope.myColor = "white";
-            		if (!\$scope.addMe1 | !\$scope.abc | !\$scope.def) {
+            		if (!\$scope.addMe1 | !\$scope.prisec | !\$scope.confirm) {
                     		\$scope.errortext = "Please enter text.";
     				if (!\$scope.addMe1){
     					\$scope.myColor = "#FA787E";
     				}
                     		return;
             		} else {
-    				alertText = \$scope.addMe1 + ': ' + \$scope.abc + ' ' + \$scope.def;
+    				alertText = \$scope.addMe1 + ': ' + \$scope.prisec + ' & ' + \$scope.confirm;
     			}
             		if (\$scope.alerts.indexOf(\$scope.addMe1) == -1){
                     		\$scope.alerts.push({msg: alertText})
@@ -332,8 +317,8 @@ var app = angular.module('diagnoses', []);
                                     	value: alertText,
                                     	encounter: x
                             	}
-    				\$scope.abc = "";
-    				\$scope.def = "";
+    				\$scope.prisec = "";
+    				\$scope.confirm = "";
                             	\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
                             		if(response.data) {
                                   console.log( x, "Success" );

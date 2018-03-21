@@ -1,5 +1,4 @@
 <style>
-
 .sr-only {
     position: absolute;
     width: 1px;
@@ -72,8 +71,7 @@ form.css-form input[type="number"] {
 }
 
 form#new-order {
-  background-color: white;
-  padding-left: 10px;
+  background-color: #F#F#F;
   padding-right: 10px;
 }
 form#new-order .dosing-type span {
@@ -109,7 +107,6 @@ form.sized-inputs label {
 form.sized-inputs label.heading {
   display: block;
 }
-
 </style>
 
 <div id="meds" class="long-info-section" ng-controller="MedsSummaryController">
@@ -142,7 +139,6 @@ form.sized-inputs label.heading {
 			<br/>
 		</div>
 	    </form>
-		<br/>
 		<br/>
 		<div uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + (alert.type || 'info')" close="closeAlert(\$index)">{{alert.msg}}</div>
 	</div>

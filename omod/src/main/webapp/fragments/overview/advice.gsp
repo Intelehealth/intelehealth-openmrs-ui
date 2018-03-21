@@ -69,6 +69,7 @@ button.close {
 		<h3>Medical Advice</h3>
 	</div>
 	<div class="info-body">
+  <br/>
 		<input ng-show="visitStatus" type="text" ng-model="addMe" uib-typeahead="test for test in advicelist | filter:\$viewValue | limitTo:8" class="form-control">
 		<button ng-show="visitStatus" type="button" class='btn btn-default' ng-click="addAlert()">Add Advice</button>
 		<p>{{errortext}}</p>
