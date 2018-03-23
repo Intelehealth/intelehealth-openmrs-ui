@@ -148,23 +148,7 @@ form.sized-inputs label.heading {
 </div>
 
 <script>
-var app = angular.module('medsSummary', ['ngAnimate', 'ngSanitize', 'recentVisit']);
-
-app.factory('CurrentEncountersFactory1', function(\$http, \$filter){
-  var patient = "${ patient.uuid }";
-  var date = new Date();
-  date = \$filter('date')(new Date(), 'yyyy-MM-dd');
-  var url = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter";
-      url += "?patient=" + patient;
-      url += "&encounterType=" + window.constantConfigObj.encounterTypeVisitNote;
-  return {
-    async: function(){
-      return \$http.get(url).then(function(response){
-        return response.data.results;
-      });
-    }
-  };
-});
+var app = angular.module('medsSummary', ['ngAnimate', 'ngSanitize']);
 
 app.factory('MedsListFactory3', function(\$http){
   return {
@@ -196,7 +180,7 @@ app.factory('MedsListFactory4', function(\$http){
   };
 });
 
-app.controller('MedsSummaryController', function(\$scope, \$http, \$timeout, CurrentEncountersFactory1, MedsListFactory3, MedsListFactory4, recentVisitFactory) {
+app.controller('MedsSummaryController', function(\$scope, \$http, \$timeout, EncounterServices, MedsListFactory3, MedsListFactory4, recentVisitFactory) {
 \$scope.alerts = [];
 \$scope.respuuid = [];
 var _selected;
@@ -291,7 +275,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
   })
 
   \$timeout(function () {
-  	var promise = CurrentEncountersFactory1.async().then(function(d){
+  	var promise = EncounterServices.getEncounter().then(function(d){
   		var length = d.length;
 		if(length > 0) {
 			angular.forEach(d, function(value, key){
@@ -302,6 +286,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
   	});
 
   	promise.then(function(x){
+      \$scope.data3 = x;
   		\$scope.addAlert = function() {
         		\$scope.errortext = "";
 			var alertText = "";
@@ -335,7 +320,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                                 	person: patient,
                                 	obsDatetime: date2,
                                 	value: alertText,
-                                	encounter: x
+                                	encounter: \$scope.data3
                         	}
 
 				\$scope.dose = "";
@@ -377,7 +362,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 			}
   		};
   	});
-  }, 2000);
+  }, 10000);
 
 
 });

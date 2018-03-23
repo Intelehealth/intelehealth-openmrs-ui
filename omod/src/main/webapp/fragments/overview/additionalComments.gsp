@@ -89,25 +89,9 @@ resize: none
 
 
 <script>
-var app = angular.module('additionalComments', ['ngAnimate', 'ngSanitize', 'recentVisit']);
+var app = angular.module('additionalComments', ['ngAnimate', 'ngSanitize']);
 
-app.factory('additionalCommentsFactory1', function(\$http, \$filter){
-  var patient = "${ patient.uuid }";
-  var date = new Date();
-  date = \$filter('date')(new Date(), 'yyyy-MM-dd');
-  var url = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter";
-      url += "?patient=" + patient;
-      url += "&encounterType=" + window.constantConfigObj.encounterTypeVisitNote;
-  return {
-    async: function(){
-      return \$http.get(url).then(function(response){
-        return response.data.results;
-      });
-    }
-  };
-});
-
-app.factory('additionalCommentsFactory3', function(\$http){
+app.factory('additionalCommentsFactory', function(\$http){
   var testurl = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/concept/" + window.constantConfigObj.conceptAdditionalComments;
   return {
     async: function(){
@@ -122,7 +106,7 @@ app.factory('additionalCommentsFactory3', function(\$http){
   };
 });
 
-app.controller('intelehealthAdditionalCommentsController', function(\$scope, \$http, \$timeout, additionalCommentsFactory1, additionalCommentsFactory3, recentVisitFactory) {
+app.controller('intelehealthAdditionalCommentsController', function(\$scope, \$http, \$timeout, EncounterServices, additionalCommentsFactory, recentVisitFactory) {
   \$scope.alerts = [];
   \$scope.respuuid = [];
   var _selected;
@@ -180,7 +164,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 
 
 
-  var promiseTests = additionalCommentsFactory3.async().then(function(d){
+  var promiseTests = additionalCommentsFactory.async().then(function(d){
 	return d;
   });
 
@@ -189,8 +173,9 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
   })
 
   \$timeout(function () {
-        var promise = additionalCommentsFactory1.async().then(function(d){
+        var promise = EncounterServices.getEncounter().then(function(d){
                 var length = d.length;
+                console.log(d,'encounters')
                 if(length > 0) {
                         angular.forEach(d, function(value, key){
                                 \$scope.data = value.uuid;
@@ -201,7 +186,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 
         promise.then(function(x){
                 \$scope.data3 = x;
-
+                console.log(\$scope.data3, 'Data3')
                 \$scope.addAlert = function() {
                         \$scope.errortext = "";
                         if (!\$scope.addMe) {
@@ -216,7 +201,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
          				person: patient,
          				obsDatetime: date2,
          				value: \$scope.addMe,
-         				encounter: x
+         				encounter: \$scope.data3
         			}
     				\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
         				if(response.data) {
@@ -248,7 +233,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 				}
 	  		};
         });
-  }, 2000);
+  }, 10000);
 
 });
 </script>

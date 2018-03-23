@@ -213,7 +213,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
          				person: patient,
          				obsDatetime: date2,
          				value: \$scope.addMe,
-         				encounter: x
+         				encounter: \$scope.data3
         			}
     				\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
         				if(response.data) {
@@ -245,7 +245,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 				}
 	  		};
         });
-  }, 2000);
+  }, 10000);
 
 });
 </script>

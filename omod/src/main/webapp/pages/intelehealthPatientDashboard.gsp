@@ -1,8 +1,7 @@
 <%
-    ui.includeJavascript("intelehealth", "angular/angular.min.js")
-    ui.includeJavascript("intelehealth", "angular/angular.js")
-    ui.includeJavascript("intelehealth", "angular-sanitize/angular-sanitize.js")
-    ui.includeJavascript("intelehealth", "angular-animate/angular-animate.js")
+    ui.includeJavascript("intelehealth", "angularJS/angular.min.js")
+    ui.includeJavascript("intelehealth", "angularJS/angular-sanitize.min.js")
+    ui.includeJavascript("intelehealth", "angularJS/angular-animate.min.js")
     ui.includeCss("intelehealth", "overview/patientSummary.css")
     ui.decorateWith("appui", "standardEmrPage")
     ui.includeCss("coreapps", "clinicianfacing/patient.css")
@@ -98,7 +97,7 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient.patient, a
                 </div>
             </div>
             */%>
-            
+
             <% if (secondColumnFragments) {
 			    secondColumnFragments.each {
                     // create a base map from the fragmentConfig if it exists, otherwise just create an empty map
@@ -111,7 +110,7 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient.patient, a
 			        ${ ui.includeFragment(it.extensionParams.provider, it.extensionParams.fragment, configs)}
 			<%   }
 			} %>
-			
+
 		<div>
 	${ui.includeFragment("intelehealth", "intelehealthPatientDashboard/recentVisitsIntelehealth", [patient: patient])}
 	</div>

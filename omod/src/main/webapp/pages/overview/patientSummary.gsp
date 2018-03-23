@@ -21,6 +21,7 @@
     ui.includeJavascript("intelehealth", "intelehealth_physical_exam_images/intelehealth_physical_exam_images.module.js")
     ui.includeJavascript("intelehealth", "intelehealth_physical_exam_images/intelehealth_physical_exam_images.service.js")
     ui.includeJavascript("intelehealth", "intelehealth_physical_exam_images/intelehealth_physical_exam_images.controller.js")
+    ui.includeJavascript("intelehealth", "EncounterService/EncounterService.js")
 %>
 
 <script type="text/javascript">
@@ -84,38 +85,9 @@ var i = path.indexOf("visitId=");
 var visitId = path.substr(i + 8, path.length);
 var isVisitNotePresent = false;
 
-var app = angular.module('patientSummary', ['ngAnimate', 'ngSanitize', 'recentVisit', 'vitalsSummary', 'famhistSummary', 'historySummary', 'complaintSummary', 'examSummary', 'diagnoses', 'medsSummary', 'orderedTestsSummary', 'adviceSummary', 'intelehealthPatientProfileImage', 'intelehealthPhysicalExamination', 'intelehealthAdditionalDocs', 'ui.bootstrap', 'additionalComments']);
+var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterService', 'ngSanitize', 'recentVisit', 'vitalsSummary', 'famhistSummary', 'historySummary', 'complaintSummary', 'examSummary', 'diagnoses', 'medsSummary', 'orderedTestsSummary', 'adviceSummary', 'intelehealthPatientProfileImage', 'intelehealthPhysicalExamination', 'intelehealthAdditionalDocs', 'ui.bootstrap', 'additionalComments']);
 
-app.factory('PatientSummaryFactory1', function(\$http, \$filter){
-  var patient = "${ patient.uuid }";
-  var date = new Date();
-  date = \$filter('date')(new Date(), 'yyyy-MM-dd');
-  var url = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter";
-      url += "?patient=" + patient;
-      url += "&encounterType=" + window.constantConfigObj.encounterTypeVisitNote;
-      url += "&fromdate=" + date;
-  return {
-    async: function(){
-      return \$http.get(url).then(function(response){
-        return response.data.results;
-      });
-    }
-  };
-});
-app.factory('PatientSummaryFactory2', function(\$http){
-  var patient = "${ patient.uuid }";
-  var testurl = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/session";
-  var date2 = new Date();
-  return {
-    async: function(){
-      return \$http.get(testurl).then(function(response){
-        return response.data.user.uuid;
-      });
-    }
-  };
-});
-
-app.controller('PatientSummaryController', function(\$scope, \$http, PatientSummaryFactory1, PatientSummaryFactory2, recentVisitFactory) {
+app.controller('PatientSummaryController', function(\$scope, \$http, recentVisitFactory, EncounterServices) {
 var patient = "${ patient.uuid }";
 var date2 = new Date();
 \$scope.isLoading = true;
@@ -137,9 +109,9 @@ recentVisitFactory.fetchVisitDetails(visitId).then(function(data) {
 							});
 						}
 						if (isVisitNotePresent == false || \$scope.visitEncounters.length == 0) {
-              var promiseuuid = PatientSummaryFactory2.async().then(function(d){
-                    return d;
-              });
+                    var promiseuuid = EncounterServices.postEncounter().then(function(response){
+                      return response;
+                    });
 
               promiseuuid.then(function(x){
                     \$scope.uuid = x;
