@@ -148,7 +148,7 @@ form.sized-inputs label.heading {
 </div>
 
 <script>
-var app = angular.module('medsSummary', ['ngAnimate', 'ngSanitize']);
+var app = angular.module('medsSummary', ['ngAnimate', 'ngSanitize', 'recentVisit', 'EncounterModule']);
 
 app.factory('MedsListFactory3', function(\$http){
   return {
@@ -180,7 +180,7 @@ app.factory('MedsListFactory4', function(\$http){
   };
 });
 
-app.controller('MedsSummaryController', function(\$scope, \$http, \$timeout, EncounterServices, MedsListFactory3, MedsListFactory4, recentVisitFactory) {
+app.controller('MedsSummaryController', function(\$scope, \$http, \$timeout, EncounterFactory, MedsListFactory3, MedsListFactory4, recentVisitFactory) {
 \$scope.alerts = [];
 \$scope.respuuid = [];
 var _selected;
@@ -275,7 +275,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
   })
 
   \$timeout(function () {
-  	var promise = EncounterServices.getEncounter().then(function(d){
+  	var promise = EncounterFactory.getEncounter().then(function(d){
   		var length = d.length;
 		if(length > 0) {
 			angular.forEach(d, function(value, key){

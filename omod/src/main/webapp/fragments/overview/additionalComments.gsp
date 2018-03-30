@@ -89,7 +89,7 @@ resize: none
 
 
 <script>
-var app = angular.module('additionalComments', ['ngAnimate', 'ngSanitize']);
+var app = angular.module('additionalComments', ['ngAnimate', 'ngSanitize', 'recentVisit', 'EncounterModule']);
 
 app.factory('additionalCommentsFactory', function(\$http){
   var testurl = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/concept/" + window.constantConfigObj.conceptAdditionalComments;
@@ -106,7 +106,7 @@ app.factory('additionalCommentsFactory', function(\$http){
   };
 });
 
-app.controller('intelehealthAdditionalCommentsController', function(\$scope, \$http, \$timeout, EncounterServices, additionalCommentsFactory, recentVisitFactory) {
+app.controller('intelehealthAdditionalCommentsController', function(\$scope, \$http, \$timeout, EncounterFactory, additionalCommentsFactory, recentVisitFactory) {
   \$scope.alerts = [];
   \$scope.respuuid = [];
   var _selected;
@@ -173,9 +173,8 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
   })
 
   \$timeout(function () {
-        var promise = EncounterServices.getEncounter().then(function(d){
+        var promise = EncounterFactory.getEncounter().then(function(d){
                 var length = d.length;
-                console.log(d,'encounters')
                 if(length > 0) {
                         angular.forEach(d, function(value, key){
                                 \$scope.data = value.uuid;
@@ -186,7 +185,6 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 
         promise.then(function(x){
                 \$scope.data3 = x;
-                console.log(\$scope.data3, 'Data3')
                 \$scope.addAlert = function() {
                         \$scope.errortext = "";
                         if (!\$scope.addMe) {
@@ -233,7 +231,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 				}
 	  		};
         });
-  }, 10000);
+  }, 2000);
 
 });
 </script>

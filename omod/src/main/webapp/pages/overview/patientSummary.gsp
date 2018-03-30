@@ -7,6 +7,7 @@
     ui.includeJavascript("intelehealth", "angularJS/angular-resource.min.js")
     ui.includeJavascript("intelehealth", "jquery/jquery.js")
     ui.includeJavascript("intelehealth", "angularJS/angular-sanitize.js")
+    ui.includeJavascript("intelehealth", "angular-ui-bootstrap/src/datepicker/datepicker.js")
     ui.includeJavascript("intelehealth", "angularJS/angular-animate.js")
     ui.includeJavascript("intelehealth", "angular-ui-bootstrap/dist/ui-bootstrap-tpls.js")
     ui.includeJavascript("intelehealth", "constants.js")
@@ -21,7 +22,8 @@
     ui.includeJavascript("intelehealth", "intelehealth_physical_exam_images/intelehealth_physical_exam_images.module.js")
     ui.includeJavascript("intelehealth", "intelehealth_physical_exam_images/intelehealth_physical_exam_images.service.js")
     ui.includeJavascript("intelehealth", "intelehealth_physical_exam_images/intelehealth_physical_exam_images.controller.js")
-    ui.includeJavascript("intelehealth", "EncounterService/EncounterService.js")
+    ui.includeJavascript("intelehealth", "EncounterService/encounter.module.js")
+    ui.includeJavascript("intelehealth", "EncounterService/encounter.service.js")
 %>
 
 <script type="text/javascript">
@@ -74,6 +76,7 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient]) }
                 ${ui.includeFragment("intelehealth", "overview/meds", [patient: patient])}
                 ${ui.includeFragment("intelehealth", "overview/orderedTests", [patient: patient])}
                 ${ui.includeFragment("intelehealth", "overview/advice", [patient: patient])}
+                ${ui.includeFragment("intelehealth", "overview/followup", [patient: patient])}
 
 	 </div>
     </div>
@@ -85,9 +88,9 @@ var i = path.indexOf("visitId=");
 var visitId = path.substr(i + 8, path.length);
 var isVisitNotePresent = false;
 
-var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterService', 'ngSanitize', 'recentVisit', 'vitalsSummary', 'famhistSummary', 'historySummary', 'complaintSummary', 'examSummary', 'diagnoses', 'medsSummary', 'orderedTestsSummary', 'adviceSummary', 'intelehealthPatientProfileImage', 'intelehealthPhysicalExamination', 'intelehealthAdditionalDocs', 'ui.bootstrap', 'additionalComments']);
+var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterModule', 'ngSanitize', 'recentVisit', 'vitalsSummary', 'famhistSummary', 'historySummary', 'complaintSummary', 'examSummary', 'diagnoses', 'medsSummary', 'orderedTestsSummary', 'adviceSummary', 'intelehealthPatientProfileImage', 'intelehealthPhysicalExamination', 'intelehealthAdditionalDocs', 'ui.bootstrap', 'additionalComments', 'FollowUp']);
 
-app.controller('PatientSummaryController', function(\$scope, \$http, recentVisitFactory, EncounterServices) {
+app.controller('PatientSummaryController', function(\$scope, \$http, recentVisitFactory, EncounterFactory) {
 var patient = "${ patient.uuid }";
 var date2 = new Date();
 \$scope.isLoading = true;
@@ -109,7 +112,7 @@ recentVisitFactory.fetchVisitDetails(visitId).then(function(data) {
 							});
 						}
 						if (isVisitNotePresent == false || \$scope.visitEncounters.length == 0) {
-                    var promiseuuid = EncounterServices.postEncounter().then(function(response){
+                    var promiseuuid = EncounterFactory.postEncounter().then(function(response){
                       return response;
                     });
 

@@ -1,16 +1,13 @@
-var EncounterServices = angular.module('EncounterService', []);
-
-EncounterServices.factory('EncounterServices', ['$http', '$filter',function( $http, $filter ){
-  var path = window.location.search;
-  var i = path.indexOf("patient=");
-  var patientId = path.substr(i + 12, path.length);
+  encounterService.factory('EncounterFactory', ['$http', '$filter',function( $http, $filter ){
+  var str = window.location.search.split('=')[1];
+  var patient = str.split('&')[0];
   var date = new Date();
   date = $filter('date')(new Date(), 'yyyy-MM-dd');
   var url = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter";
-      url += "?patient=" + patientId;
+      url += "?patient=" + patient;
       url += "&encounterType=" + "d7151f82-c1f3-4152-a605-2f9ea7414a79";
-      url += "&fromdate=" + date;
   var testurl = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/session";
+  console.log(url);
   return{
     getEncounter: function(){
       return $http.get(url).then(function(response){

@@ -83,23 +83,7 @@ button.close {
 </div>
 
 <script>
-var app = angular.module('adviceSummary', ['ngAnimate', 'ngSanitize', 'recentVisit']);
-
-app.factory('AdviceSummaryFactory1', function(\$http, \$filter){
-  var patient = "${ patient.uuid }";
-  var date = new Date();
-  date = \$filter('date')(new Date(), 'yyyy-MM-dd');
-  var url = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter";
-      url += "?patient=" + patient;
-      url += "&encounterType=" + window.constantConfigObj.encounterTypeVisitNote;
-  return {
-    async: function(){
-      return \$http.get(url).then(function(response){
-        return response.data.results;
-      });
-    }
-  };
-});
+var app = angular.module('adviceSummary', ['recentVisit', 'ngAnimate', 'ngSanitize', 'EncounterModule']);
 
 app.factory('AdviceSummaryFactory3', function(\$http){
   var testurl = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/concept/" + window.constantConfigObj.conceptMedicalAdvice1;
@@ -116,7 +100,7 @@ app.factory('AdviceSummaryFactory3', function(\$http){
   };
 });
 
-app.controller('AdviceSummaryController', function(\$scope, \$http, \$timeout, AdviceSummaryFactory1, AdviceSummaryFactory3, recentVisitFactory) {
+app.controller('AdviceSummaryController', function(\$scope, \$http, \$timeout, EncounterFactory, AdviceSummaryFactory3, recentVisitFactory) {
 \$scope.alerts = [];
 \$scope.respuuid = [];
 var _selected;
@@ -178,7 +162,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
   })
 
   \$timeout(function () {
-  	var promise = AdviceSummaryFactory1.async().then(function(d){
+  	var promise = EncounterFactory.getEncounter().then(function(d){
   		var length = d.length;
 		if(length > 0) {
 			angular.forEach(d, function(value, key){
@@ -190,7 +174,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 
   	promise.then(function(x){
       \$scope.data3 = x;
-  		\$scope.addAlert = function() {
+      \$scope.addAlert = function() {
         		\$scope.errortext = "";
         		if (!\$scope.addMe) {
                 		\$scope.errortext = "Please enter text.";
@@ -206,7 +190,6 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                                 	value: \$scope.addMe,
                                 	encounter: \$scope.data3
                         	}
-
                         	\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
                         		if(response.data){
                                 		\$scope.statuscode = "Success";
@@ -222,8 +205,8 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                         		\$scope.statuscode = "Failed to create Obs";
                         	});
         		}
-  		};
 
+};
   		\$scope.closeAlert = function(index) {
 	  		if (\$scope.visitStatus) {
 
@@ -236,11 +219,9 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 	                		\$scope.statuscode = "Failed to delete Obs";
 	                	});
 	        }
-  		};
+        };
   	});
-  }, 10000);
-
-
+  }, 2000);
 });
 </script>
 

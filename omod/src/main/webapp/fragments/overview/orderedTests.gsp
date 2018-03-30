@@ -85,24 +85,7 @@ button.close {
 </div>
 
 <script>
-var app = angular.module('orderedTestsSummary', ['ngAnimate', 'ngSanitize', 'recentVisit']);
-
-app.factory('OrderedTestsSummaryFactory1', function(\$http, \$filter){
-  var patient = "${ patient.uuid }";
-  var date = new Date();
-  date = \$filter('date')(new Date(), 'yyyy-MM-dd');
-  var url = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter";
-      url += "?patient=" + patient;
-      url += "&encounterType=" + window.constantConfigObj.encounterTypeVisitNote;
-  return {
-    async: function(){
-      return \$http.get(url).then(function(response){
-        return response.data.results;
-      });
-    }
-  };
-});
-
+var app = angular.module('orderedTestsSummary', ['recentVisit', 'ngAnimate', 'ngSanitize', 'EncounterModule']);
 
 app.factory('OrderedTestsSummaryFactory3', function(\$http){
   var testurl = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/concept/" + window.constantConfigObj.conceptTests;
@@ -119,13 +102,12 @@ app.factory('OrderedTestsSummaryFactory3', function(\$http){
   };
 });
 
-app.controller('OrderedTestsSummaryController', function(\$scope, \$http, \$timeout, OrderedTestsSummaryFactory1, OrderedTestsSummaryFactory3, recentVisitFactory) {
-  \$scope.alerts = [];
-  \$scope.respuuid = [];
-  var _selected;
-  var patient = "${ patient.uuid }";
-  var date2 = new Date();
-
+app.controller('OrderedTestsSummaryController', function(\$scope, \$http, \$timeout, EncounterFactory, OrderedTestsSummaryFactory3, recentVisitFactory) {
+\$scope.alerts = [];
+\$scope.respuuid = [];
+var _selected;
+var patient = "${ patient.uuid }";
+var date2 = new Date();
 var path = window.location.search;
 var i = path.indexOf("visitId=");
 var visitId = path.substr(i + 8, path.length);
@@ -186,7 +168,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
   })
 
   \$timeout(function () {
-        var promise = OrderedTestsSummaryFactory1.async().then(function(d){
+        var promise = EncounterFactory.getEncounter().then(function(d){
                 var length = d.length;
                 if(length > 0) {
                         angular.forEach(d, function(value, key){
@@ -197,8 +179,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
         });
 
         promise.then(function(x){
-                \$scope.data3 = x;
-
+                 var testencounter = x;
                 \$scope.addAlert = function() {
                         \$scope.errortext = "";
                         if (!\$scope.addMe) {
@@ -213,7 +194,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
          				person: patient,
          				obsDatetime: date2,
          				value: \$scope.addMe,
-         				encounter: \$scope.data3
+         				encounter: x
         			}
     				\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
         				if(response.data) {
@@ -245,7 +226,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 				}
 	  		};
         });
-  }, 10000);
+  }, 2000);
 
 });
 </script>
