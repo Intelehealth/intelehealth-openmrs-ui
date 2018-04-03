@@ -167,6 +167,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 	\$scope.testlist = x;
   })
 
+
   \$timeout(function () {
         var promise = EncounterFactory.getEncounter().then(function(d){
                 var length = d.length;
@@ -179,7 +180,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
         });
 
         promise.then(function(x){
-                 var testencounter = x;
+                 \$scope.data3 = x;
                 \$scope.addAlert = function() {
                         \$scope.errortext = "";
                         if (!\$scope.addMe) {
@@ -194,7 +195,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
          				person: patient,
          				obsDatetime: date2,
          				value: \$scope.addMe,
-         				encounter: x
+         				encounter: \$scope.data3
         			}
     				\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
         				if(response.data) {
