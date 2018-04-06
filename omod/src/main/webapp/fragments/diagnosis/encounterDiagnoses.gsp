@@ -323,7 +323,7 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
                                 return d.valueToSubmit();
                         }).join(", ") + "]";
                 };
-              }, 2000);
+
 
 		\$scope.closeAlert = function(index) {
 			if (\$scope.visitStatus) {
@@ -339,6 +339,7 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
               });
 		}
 		};
+    }, 5000);
         }
     ]);
 

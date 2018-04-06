@@ -362,7 +362,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 			}
   		};
   	});
-  }, 10000);
+  }, 5000);
 
 
 });

@@ -165,7 +165,7 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 	        }
   		};
 		});
-	},2000);
+	},5000);
 });
 
 </script>

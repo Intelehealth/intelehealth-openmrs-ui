@@ -221,7 +221,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 	        }
         };
   	});
-  }, 2000);
+  }, 5000);
 });
 </script>
 
