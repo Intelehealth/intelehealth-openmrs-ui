@@ -20,7 +20,7 @@ display: block;
 		        <button type="button" class="btn" data-toggle="datepicker"> <i class="icon-calendar"></i>
 		        </button>
 </span>
-				<input type="text" style = 'margin-top : 10px; margin-left : 10px;' ng-model = 'advice' name="" value="" placeholder="Follow Up Advice">
+				<input type="text" style = 'margin-top : 10px; margin-left : 10px;' ng-model = 'advice' placeholder="Follow Up Advice">
 				<br/> <br/>
 				<button type="button" ng-click = 'addtype()' ng-show = "alerts.length == 0">Schedule a Follow Up</button>
 				{{errortext}}
@@ -42,7 +42,9 @@ myApp.directive('bDatepicker', function () {
     return {
         restrict: 'A',
         link: function (scope, el, attr) {
-            el.datepicker({});
+            el.datepicker({
+							minDate: 0
+						});
             var component = el.siblings('[data-toggle="datepicker"]');
             if (component.length) {
                 component.on('click', function () {
@@ -144,7 +146,9 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 									v.uuid = response.data.uuid;
 									}
 								});
-								\$scope.followup = "";
+								\$scope.to = "";
+								\$scope.from = "";
+								\$scope.advice = "";
 														}
 											}, function(response){
 												\$scope.statuscode = "Failed to create Obs";

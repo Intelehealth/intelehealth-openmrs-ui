@@ -7,7 +7,6 @@
       url += "?patient=" + patient;
       url += "&encounterType=" + "d7151f82-c1f3-4152-a605-2f9ea7414a79";
   var testurl = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/session";
-  console.log(url);
   return{
     getEncounter: function(){
       return $http.get(url).then(function(response){
