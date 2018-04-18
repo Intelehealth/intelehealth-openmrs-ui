@@ -18,9 +18,6 @@
 	<div>
 	<small><i>c. = Associated with, s. = Not associated with, h/o = History of </i></small>
 	</div>
-    <div>
-        <a href="#" class="right back-to-top">Back to top</a>
-    </div>
 </div>
 
 <script>

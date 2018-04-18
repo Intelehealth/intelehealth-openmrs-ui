@@ -13,9 +13,7 @@
 		</tr>
 	</table>
 	</div>
-    <div>
-        <a href="#" class="right back-to-top">Back to top</a>
-    </div>
+	<br>
 </div>
 
 <script>

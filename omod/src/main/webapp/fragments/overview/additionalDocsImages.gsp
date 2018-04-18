@@ -1,4 +1,4 @@
-<div class="info-section" >
+<div class="long-info-section" >
     <div class="info-header">
         <h3>Additional Documents</h3>
     </div>
@@ -16,10 +16,8 @@
 	<div ng-if="!additionalDocsPresent">
     	No Additional Documents available!
     </div>
-    
-    </div>
-    <div>
-        <a href="#" class="right back-to-top">Back to top</a>
-    </div>
+    <br>
 </div>
-
+<br>
+<br>
+<div>

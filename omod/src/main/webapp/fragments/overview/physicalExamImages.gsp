@@ -17,9 +17,6 @@
 <div ng-if="!physicalExamPresent">
     	No Physical Exam Images available!
     </div>
-
     </div>
-    <div>
-        <a href="#" class="right back-to-top">Back to top</a>
-    </div>
+    <br>
 </div>

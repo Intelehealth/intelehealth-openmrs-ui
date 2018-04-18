@@ -2,6 +2,7 @@
   var str = window.location.search.split('=')[1];
   var patient = str.split('&')[0];
   var date = new Date();
+  var date2 = new Date();
   date = $filter('date')(new Date(), 'yyyy-MM-dd');
   var url = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter";
       url += "?patient=" + patient;
