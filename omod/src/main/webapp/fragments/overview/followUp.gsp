@@ -118,7 +118,7 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 		promise.then(function(x){
 		\$scope.data3 = x;
 			\$scope.addtype = function(){
-				\$scope.followup = \$scope.to + ' to ' +  \$scope.from;
+				\$scope.followup = \$scope.from + ' to ' +  \$scope.to;
 				if(\$scope.advice){
 					\$scope.followup += ', Advice: ' + \$scope.advice;
 				}
@@ -137,6 +137,9 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 															value: \$scope.followup,
 															encounter: \$scope.data3
 											}
+											\$scope.from = '';
+											\$scope.to = '';
+											\$scope.advice = '';
 											\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
 												if(response.data){
 																\$scope.statuscode = "Success";
