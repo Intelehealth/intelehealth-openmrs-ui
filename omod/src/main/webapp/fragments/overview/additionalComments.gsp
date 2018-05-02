@@ -73,6 +73,7 @@ resize: none
 		<h3>Doctor's Note</h3>
 	</div>
 	<div class="info-body">
+  <br>
 			<textarea row="3" cols="50" class="comments" ng-show="visitStatus" type="text" ng-model="addMe" class="form-control"></textarea>
 			<button ng-show="visitStatus" type="button" class='btn btn-default' ng-click="addAlert()">Add Note</button>
 			<p>{{errortext}}</p>

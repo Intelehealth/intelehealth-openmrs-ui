@@ -62,7 +62,7 @@ button.close {
     background: 0 0;
     border: 0
 }
-.labelspace{
+#diagnosis{
   display: inline !important;
   vertical-align: baseline !important;
 }
@@ -108,20 +108,20 @@ button.close {
             <br/>
         		<br/>
             <div class = 'radioclass'>
-            <label class = 'labelspace'>
+            <label id = "diagnosis">
   						<input type="radio" value="Primary" ng-model="prisec">
   						  Primary
 					  </label>
-            <label class = 'labelspace' style = " margin-left: 30px !important; ">
+            <label id = "diagnosis" style = " margin-left: 30px !important; ">
       				<input type="radio" value="Secondary" ng-model="prisec">
       				  Secondary
   		      </label>
             <br/>
-            <label class = 'labelspace' >
+            <label id = "diagnosis">
               <input type="radio" value="Confirmed" ng-model="confirm">
                 Confirmed
             </label>
-            <label class = 'labelspace'>
+            <label id = "diagnosis">
               <input type="radio" value="Certain" ng-model="confirm">
                 Certain
             </label>

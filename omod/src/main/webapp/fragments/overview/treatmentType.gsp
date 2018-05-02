@@ -1,54 +1,49 @@
 <style>
 .input{
-background : #F9F9F9;
-display: block;
+	background : #F9F9F9;
+	display: block;
+}
+.labelspace{
+	padding-left: 30px;
 }
 </style>
-<div ng-controller="Ctrl" id = "followup">
-<div class="info-header">
-		<i class="icon-book"></i>
-		<h3>Follow Up</h3>
+<div id="advice" class="long-info-section" ng-controller="TypeController">
+	<div class="info-header">
+		<i class="icon-comments"></i>
+		<h3>Treatment Type</h3>
 	</div>
-	<div class="info-body">
+	<div class="input">
 		<br/>
-		<div>
-		        <input type="text" b-datepicker ng-model="followup_date" placeholder="Follow Up Date"/>
-		        <button type="button" class="btn" data-toggle="datepicker"> <i class="icon-calendar"></i>
-		        </button>
-				<input type="text" style = 'margin-top : 10px; margin-left : 10px;' ng-model = 'advice'placeholder="Follow Up Advice">
-				<button type="button" ng-click = 'addtype()' ng-show = "alerts.length == 0">Schedule a Follow Up</button>
-				{{errortext}}
-				<br>
-				<br/>
-				<div uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + (alert.type || 'info')" close="closeAlert(\$index)">{{alert.msg}}</div>
-		</div>
-		</div>
-		<div>
-		<p>*please delete current schedule to schedule a new follow up.</p>
-	</div>
+		<label style="padding-left: 10px;">
+							<input type="radio"  value="Ayurvedic" ng-model="treatment">
+							Ayurvedic
+					</label>
+		<label class = 'labelspace'>
+				<input type="radio" value="Allopathic" ng-model="treatment">
+				Allopathic
+		</label>
+		<label class = 'labelspace'>
+				<input type="radio"  value="Combination" ng-model="treatment">
+				Combination
+		</label>
+		<button type="button"  ng-click = 'addtype()'  style=" margin-left: 30px;" ng-show = "alerts.length == 0">Add Treatment Type</button>
+		{{errortext}}
+		<br/>
+<br/>
+<div uib-alert ng-repeat="alert in alerts" style = "margin: 10px 7px;" ng-class="'alert-' + (alert.type || 'info')" close="closeAlert(\$index)">{{alert.msg}}</div>
 </div>
+</div>
+	<div>
+		<p>*please delete current treatment type to reselect the treatment type.</p>
+	</div>
+		<br/>
+</div>
+
+
 <script>
-var myApp = angular.module('FollowUp', ['recentVisit', 'ngAnimate', 'ngSanitize', 'EncounterModule']);
+	var app = angular.module('TreatmentType', ['recentVisit', 'ngAnimate', 'ngSanitize', 'EncounterModule']);
 
-myApp.directive('bDatepicker', function () {
-    return {
-        restrict: 'A',
-        link: function (scope, el, attr) {
-            el.datepicker({
-							minDate: 0,
-							dateFormat: 'dd-mm-yy'
-						});
-            var component = el.siblings('[data-toggle="datepicker"]');
-            if (component.length) {
-                component.on('click', function () {
-                    el.trigger('focus');
-                });
-            }
-        }
-    };
-});
-
-myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, recentVisitFactory){
+	app.controller('TypeController', function(\$scope, \$http, \$timeout, EncounterFactory, recentVisitFactory){
 		var patient = "${patient.uuid}";
 		\$scope.alerts = [];
 		var date2 = new Date();
@@ -81,7 +76,8 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 							 \$http.get(encounterUrl).then(function(response) {
 							 	angular.forEach(response.data.obs, function(v, k){
 								var encounter = v.display;
-								if(encounter.match("Follow up visit") !== null) {
+								console.log(encounter);
+								if(encounter.match("Treatment Type.") !== null) {
 									\$scope.alerts.push({"msg":v.display.slice(16,v.display.length), "uuid": v.uuid});
 									}
 								});
@@ -98,6 +94,7 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 					}, function(error) {
 					console.log(error);
 				});
+	\$scope.types = ['Ayurvedic', 'Allopathic', 'Combination'];
 	\$timeout(function(){
 		var promise = EncounterFactory.getEncounter().then(function(d){
 			var length = d.length;
@@ -109,41 +106,35 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 		return \$scope.data;
 		});
 		promise.then(function(x){
-		\$scope.data3 = x;
 			\$scope.addtype = function(){
-				\$scope.followup = \$scope.followup_date;
-				if(\$scope.advice){
-					\$scope.followup += ', Advice: ' + \$scope.advice;
-				}
 				\$scope.errortext = "";
-				if (!\$scope.followup_date) {
+				if (!\$scope.treatment) {
 								\$scope.errortext = "Please enter text.";
 								return;
 				}
-				if (\$scope.alerts.indexOf(\$scope.followup) == -1){
-								\$scope.alerts.push({msg: \$scope.followup})
+				if (\$scope.alerts.indexOf(\$scope.treatment) == -1){
+								\$scope.alerts.push({msg: \$scope.treatment});
 								  var url2 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/obs";
 											\$scope.json = {
-															concept: 'e8caffd6-5d22-41c4-8d6a-bc31a44d0c86',
+															concept: '91f72312-069f-4344-83c8-13fe61d37970',
 															person: patient,
 															obsDatetime: date2,
-															value: \$scope.followup,
-															encounter: \$scope.data3
+															value: \$scope.treatment,
+															encounter: \$scope.encounterUuid
 											}
-											\$scope.followup_date = '';
-											\$scope.advice = '';
+											\$scope.treatment = "";
 											\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
 												if(response.data){
 																\$scope.statuscode = "Success";
 																angular.forEach(\$scope.alerts, function(v, k){
 									var encounter = v.msg;
-									if(encounter.match(\$scope.followup) !== null) {
+									if(encounter.match(\$scope.treatment) !== null) {
 									v.uuid = response.data.uuid;
 									}
 								});
-								\$scope.followup = "";
 														}
 											}, function(response){
+												console.log(response);
 												\$scope.statuscode = "Failed to create Obs";
 											});
 				}
@@ -162,7 +153,6 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 	        }
   		};
 		});
-	},5000);
+	},2000);
 });
-
 </script>
