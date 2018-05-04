@@ -1,29 +1,20 @@
-<style>
-.input{
-	background : #F9F9F9;
-	display: block;
-}
-.labelspace{
-	padding-left: 30px;
-}
-</style>
-<div id="advice" class="long-info-section" ng-controller="TypeController">
+<div id="treatment" class="long-info-section" ng-controller="TypeController">
 	<div class="info-header">
 		<i class="icon-comments"></i>
 		<h3>Treatment Type</h3>
 	</div>
-	<div class="input">
+	<div id = "treatment-type-input" ng-cloak>
 		<br/>
 		<label style="padding-left: 10px;">
 							<input type="radio"  value="Ayurvedic" ng-model="treatment">
 							Ayurvedic
 					</label>
-		<label class = 'labelspace'>
+		<label id = "treatment-type-labelspace">
 				<input type="radio" value="Allopathic" ng-model="treatment">
 				Allopathic
 		</label>
-		<label class = 'labelspace'>
-				<input type="radio"  value="Combination" ng-model="treatment">
+		<label id = "treatment-type-labelspace">
+				<input type = "radio" value="Combination" ng-model="treatment">
 				Combination
 		</label>
 		<button type="button"  ng-click = 'addtype()'  style=" margin-left: 30px;" ng-show = "alerts.length == 0">Add Treatment Type</button>

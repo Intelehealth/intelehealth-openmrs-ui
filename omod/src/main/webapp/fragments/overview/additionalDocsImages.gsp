@@ -4,7 +4,7 @@
     </div>
     <div class="info-body" ng-controller="intelehealthAdditionalDocsController">
 
-<div ng-if="additionalDocsPresent">
+<div ng-if="additionalDocsPresent" ng-cloak>
   <ui-carousel slides="patientImage" slides-to-show="3" slides-to-scroll="3" dots="true">
   <carousel-item>
   <div>
@@ -16,7 +16,6 @@
 	<div ng-if="!additionalDocsPresent">
     	No Additional Documents available!
     </div>
-    <br>
 </div>
 <br>
 <br>

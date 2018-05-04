@@ -2,7 +2,7 @@
     <div class="info-header">
         <h3>Physical Exam Images</h3>
     </div>
-    <div class="info-body" ng-controller="intelehealthPhysicalExaminationController">
+    <div class="info-body" ng-controller="intelehealthPhysicalExaminationController" ng-cloak>
 
     <div ng-if="physicalExamPresent">
   <ui-carousel slides="patientImage" slides-to-show="3" slides-to-scroll="3" dots="true">
