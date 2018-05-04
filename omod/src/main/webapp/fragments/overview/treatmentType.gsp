@@ -76,7 +76,6 @@
 							 \$http.get(encounterUrl).then(function(response) {
 							 	angular.forEach(response.data.obs, function(v, k){
 								var encounter = v.display;
-								console.log(encounter);
 								if(encounter.match("Treatment Type.") !== null) {
 									\$scope.alerts.push({"msg":v.display.slice(16,v.display.length), "uuid": v.uuid});
 									}
@@ -96,16 +95,6 @@
 				});
 	\$scope.types = ['Ayurvedic', 'Allopathic', 'Combination'];
 	\$timeout(function(){
-		var promise = EncounterFactory.getEncounter().then(function(d){
-			var length = d.length;
-		if(length > 0) {
-			angular.forEach(d, function(value, key){
-				\$scope.data = value.uuid;
-			});
-		}
-		return \$scope.data;
-		});
-		promise.then(function(x){
 			\$scope.addtype = function(){
 				\$scope.errortext = "";
 				if (!\$scope.treatment) {
@@ -120,7 +109,7 @@
 															person: patient,
 															obsDatetime: date2,
 															value: \$scope.treatment,
-															encounter: \$scope.encounterUuid
+															encounter: EncounterFactory.encounterValue
 											}
 											\$scope.treatment = "";
 											\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
@@ -152,7 +141,6 @@
 	                	});
 	        }
   		};
-		});
 	},2000);
 });
 </script>

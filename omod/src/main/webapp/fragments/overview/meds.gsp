@@ -273,18 +273,6 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
   })
 
   \$timeout(function () {
-  	var promise = EncounterFactory.getEncounter().then(function(d){
-  		var length = d.length;
-		if(length > 0) {
-			angular.forEach(d, function(value, key){
-				\$scope.data = value.uuid;
-			});
-		}
-		return \$scope.data;
-  	});
-
-  	promise.then(function(x){
-      \$scope.data3 = x;
   		\$scope.addAlert = function() {
         		\$scope.errortext = "";
 			var alertText = "";
@@ -318,7 +306,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                                 	person: patient,
                                 	obsDatetime: date2,
                                 	value: alertText,
-                                	encounter: \$scope.data3
+                                	encounter: EncounterFactory.encounterValue
                         	}
 
 				\$scope.dose = "";
@@ -359,7 +347,6 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                 });
 			}
   		};
-  	});
   }, 5000);
 
 

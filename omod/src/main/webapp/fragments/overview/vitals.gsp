@@ -18,7 +18,10 @@
                         <td style="border:none">
                             Weight: {{item.weight}} kg
                         </td>
-                        <td style="border:none">
+                        <td ng-if = "item.weight.includes('-') || item.height.includes('-')" style="border:none">
+                            BMI: {{item.bmi}}
+                        </td>
+												<td ng-if = "!item.weight.includes('-') && !item.height.includes('-')" style="border:none">
                             BMI: {{item.weight/((item.height/100)*(item.height/100)) | round}}
                         </td>
                         <td style="border:none">
@@ -76,7 +79,9 @@ recentVisitFactory.fetchVisitDetails(visitId).then(function(data) {
 								var encounterUrl =  "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter/" + encounterUuid;
 								\$http.get(encounterUrl).then(function(response) {
 								\$scope.visitObs.push(response.data.obs);
-								 var answers = {date:response.data.display, temperature:'-', height:'-', weight:'-', o2sat:'-', systolicBP:'-', diastolicBP: '-', pulse: '-'};
+								console.log(response.data.obs);
+								 var answers = {date:response.data.display, temperature:'-', height:'-', weight:'-', bmi: '-', o2sat:'-', systolicBP:'-', diastolicBP: '-', pulse: '-'};
+								 console.log(answers);
 								   angular.forEach(response.data.obs, function(value, key){
 									if(value.display.includes('TEMP')){
 										answers.temperature = Number(value.display.slice(17,value.display.length));

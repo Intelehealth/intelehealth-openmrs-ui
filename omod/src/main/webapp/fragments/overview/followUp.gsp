@@ -98,18 +98,8 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 					}, function(error) {
 					console.log(error);
 				});
-	\$timeout(function(){
-		var promise = EncounterFactory.getEncounter().then(function(d){
-			var length = d.length;
-		if(length > 0) {
-			angular.forEach(d, function(value, key){
-				\$scope.data = value.uuid;
-			});
-		}
-		return \$scope.data;
-		});
-		promise.then(function(x){
-		\$scope.data3 = x;
+
+			\$timeout(function (){
 			\$scope.addtype = function(){
 				\$scope.followup = \$scope.followup_date;
 				if(\$scope.advice){
@@ -128,7 +118,7 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 															person: patient,
 															obsDatetime: date2,
 															value: \$scope.followup,
-															encounter: \$scope.data3
+															encounter: EncounterFactory.encounterValue
 											}
 											\$scope.followup_date = '';
 											\$scope.advice = '';
@@ -161,8 +151,7 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 	                	});
 	        }
   		};
-		});
-	},5000);
+		}, 5000);
 });
 
 </script>
