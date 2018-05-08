@@ -4,7 +4,7 @@
     </div>
     <div class="info-body" ng-controller="intelehealthAdditionalDocsController">
 
-<div ng-if="additionalDocsPresent" ng-cloak>
+<div ng-if="additionalDocsPresent">
   <ui-carousel slides="patientImage" slides-to-show="3" slides-to-scroll="3" dots="true">
   <carousel-item>
   <div>

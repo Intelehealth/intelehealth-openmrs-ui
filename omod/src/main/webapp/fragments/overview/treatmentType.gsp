@@ -97,6 +97,7 @@
 		return \$scope.data;
 		});
 		promise.then(function(x){
+		\$scope.data3 = x;
 			\$scope.addtype = function(){
 				\$scope.errortext = "";
 				if (!\$scope.treatment) {
@@ -111,7 +112,7 @@
 															person: patient,
 															obsDatetime: date2,
 															value: \$scope.treatment,
-															encounter: \$scope.encounterUuid
+															encounter: \$scope.data3
 											}
 											\$scope.treatment = "";
 											\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
@@ -144,6 +145,6 @@
 	        }
   		};
 		});
-	},2000);
+	}, 5000);
 });
 </script>
