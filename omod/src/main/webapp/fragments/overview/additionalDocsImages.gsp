@@ -16,7 +16,6 @@
 	<div ng-if="!additionalDocsPresent">
     	No Additional Documents available!
     </div>
-    <br>
 </div>
 <br>
 <br>

@@ -5,7 +5,7 @@
 		<h3>Past Medical History</h3>
 	</div>
 	<div class="info-body">
-	<table>
+	<table ng-cloak>
 		<tr ng-repeat="item in visitEncounters | orderBy:'-encounterDatetime' | filter : 'ADULTINITIAL'">
 			<td width="100px" style="border: none">{{item.display | dateFormat | date: 'dd.MMM.yyyy'}}</td>
 	                <td style="border:none" ng-repeat="ob in item.obs | filter : 'MEDICAL HISTORY' | orderBy:'-display'" ng-bind-html = "ob.display | limitTo : ob.display.length : '17'">

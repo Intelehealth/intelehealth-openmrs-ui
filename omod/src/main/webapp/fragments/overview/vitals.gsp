@@ -3,8 +3,8 @@
 		<i class="icon-vitals"></i>
 		<h3>Vitals</h3>
 	</div>
-	<div class="info-body">
-        <table>
+	<div class="info-body" >
+        <table ng-cloak>
                 <tr ng-if="!vitalsPresent"><td>No Data</td></tr>
                 <tr ng-if="vitalsPresent" ng-repeat="item in vitalsData | orderBy:'-date'">
                         <td width="100px" style="border: none">{{item.date | vitalsDate | date: 'dd.MMM.yyyy'}}</td>
@@ -24,6 +24,9 @@
 												<td ng-if = "!item.weight.includes('-') && !item.height.includes('-')" style="border:none">
                             BMI: {{item.weight/((item.height/100)*(item.height/100)) | round}}
                         </td>
+												<td ng-if = "!item.weight.includes('-') && !item.height.includes('-')" style="border:none">
+															BMI: {{item.weight/((item.height/100)*(item.height/100)) | round}}
+													</td>
                         <td style="border:none">
                             Sp02: {{item.o2sat}}%
                         </td>
@@ -79,9 +82,7 @@ recentVisitFactory.fetchVisitDetails(visitId).then(function(data) {
 								var encounterUrl =  "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter/" + encounterUuid;
 								\$http.get(encounterUrl).then(function(response) {
 								\$scope.visitObs.push(response.data.obs);
-								console.log(response.data.obs);
-								 var answers = {date:response.data.display, temperature:'-', height:'-', weight:'-', bmi: '-', o2sat:'-', systolicBP:'-', diastolicBP: '-', pulse: '-'};
-								 console.log(answers);
+								 var answers = {date:response.data.display, temperature:'-', height:'-', weight:'-', bmi:'-', o2sat:'-', systolicBP:'-', diastolicBP: '-', pulse: '-'};
 								   angular.forEach(response.data.obs, function(value, key){
 									if(value.display.includes('TEMP')){
 										answers.temperature = Number(value.display.slice(17,value.display.length));

@@ -1,9 +1,3 @@
-<style>
-.input{
-background : #F9F9F9;
-display: block;
-}
-</style>
 <div ng-controller="Ctrl" id = "followup">
 <div class="info-header">
 		<i class="icon-book"></i>
