@@ -4,6 +4,7 @@
 		<h3>Treatment Type</h3>
 	</div>
 	<div id = "treatment-type-input" ng-cloak>
+		<div ng-show="visitStatus">
 		<br/>
 		<label style="padding-left: 10px;">
 							<input type="radio"  value="Ayurvedic" ng-model="treatment">
@@ -21,6 +22,7 @@
 		{{errortext}}
 		<br/>
 <br/>
+</div>
 <div uib-alert ng-repeat="alert in alerts" style = "margin: 10px 7px;" ng-class="'alert-' + (alert.type || 'info')" close="closeAlert(\$index)">{{alert.msg}}</div>
 </div>
 </div>
@@ -84,20 +86,13 @@
 					}, function(error) {
 					console.log(error);
 				});
+
 	\$scope.types = ['Ayurvedic', 'Allopathic', 'Combination'];
+
 	\$timeout(function(){
-		var promise = EncounterFactory.getEncounter().then(function(d){
-			var length = d.length;
-		if(length > 0) {
-			angular.forEach(d, function(value, key){
-				\$scope.data = value.uuid;
-			});
-		}
-		return \$scope.data;
-		});
-		promise.then(function(x){
-		\$scope.data3 = x;
 			\$scope.addtype = function(){
+				if(EncounterFactory.encounterValue){
+
 				\$scope.errortext = "";
 				if (!\$scope.treatment) {
 								\$scope.errortext = "Please enter text.";
@@ -111,7 +106,7 @@
 															person: patient,
 															obsDatetime: date2,
 															value: \$scope.treatment,
-															encounter: \$scope.data3
+															encounter: EncounterFactory.encounterValue
 											}
 											\$scope.treatment = "";
 											\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
@@ -129,6 +124,11 @@
 												\$scope.statuscode = "Failed to create Obs";
 											});
 				}
+				}
+				else {
+					alert("If there are multiple reloads, please contact system admin.");
+					window.location.reload(true);
+				}
 };
 			\$scope.closeAlert = function(index) {
 	  		if (\$scope.visitStatus) {
@@ -143,7 +143,6 @@
 	                	});
 	        }
   		};
-		});
 	}, 5000);
 });
 </script>

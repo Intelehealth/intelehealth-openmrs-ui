@@ -4,7 +4,7 @@
 
 <% /* This is an underscore template, since I dont know how to use angular templates programmatically */ %>
 
-<script ng-show="visitStatus" type="text/template" id="autocomplete-render-item">
+<script type="text/template" id="autocomplete-render-item">
     <span class="code">
         {{ if (item.code) { }}
         {{- item.code }}
@@ -30,6 +30,7 @@
         		<h3>Diagnoses</h3>
         	</div>
         	<div class="info-body" ng-cloak>
+            <div  ng-show="visitStatus">
         		<br/>
         		<input type="text" ng-model="addMe1" autocomplete itemFormatter="autocomplete-render-item"  class="form-control">
         		<button type="button" class='btn btn-default' ng-click="addAlert()">Add Diagnosis</button>
@@ -55,6 +56,7 @@
                 Certain
             </label>
           </div>
+        </div>
           <br>
         		<div uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + (alert.type || 'info')" close="closeAlert(\$index)">{{alert.msg}}</div>
         	</div>
@@ -79,7 +81,7 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
         }
       };
     });
-    app.directive('autocomplete', function(\$compile, \$timeout, \$http, DiagnosisFactory1) {
+    app.directive('autocomplete', function(\$compile, \$timeout, \$http, DiagnosisFactory1, EncounterFactory) {
         return function(scope, element, attrs) {
             // I don't know how to use an angular template programmatically, so use an underscore template instead. :-(
             var itemFormatter = _.template(\$('#' + attrs.itemformatter).html());
@@ -112,19 +114,12 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
                         scope.encounterDiagnoses.addDiagnosis(diagnoses.Diagnosis(ui.item));
                         var topost = diagnoses.Diagnosis(ui.item);
                         \$timeout(function () {
-                                var promise = DiagnosisFactory1.async().then(function(d){
-                                        var length = d.length;
-                                        if(length > 0) {
-                                                angular.forEach(d, function(value, key){
-                                                        scope.data = value.uuid;
-                                                });
-                                        }
-                                        return scope.data;
-                                });
         scope.patient = "${ patient.uuid }";
         scope.addMe1 = topost.diagnosis.matchedName;
-				promise.then(function(x){
+
           scope.addAlert = function(){
+            if(EncounterFactory.encounterValue){
+
             scope.errortext = '';
             var alertText = '';
             var date2 = new Date();
@@ -147,7 +142,7 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
                       person: scope.patient,
                       obsDatetime: date2,
                       value: alertText,
-                      encounter: x
+                      encounter: EncounterFactory.encounterValue
               }
               scope.prisec = 'Primary';
               scope.confirm = '';
@@ -165,8 +160,12 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
                         scope.statuscode = "Failed to create Obs";
               });
             }
+          }
+          else {
+						alert("If there are multiple reloads, please contact system admin.");
+            window.location.reload(true);
+					}
           };
-      });
     }, 1000);
                     });
                     return false;
@@ -179,7 +178,7 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
         }
     });
     app.controller('DiagnosesController', [ '\$scope', '\$http' , '\$timeout', 'DiagnosisFactory1', 'recentVisitFactory',
-        function DiagnosesController(\$scope, \$http, \$timeout, DiagnosisFactory1, recentVisitFactory) {
+        function DiagnosesController(\$scope, \$http, \$timeout, DiagnosisFactory1, recentVisitFactory, EncounterFactory) {
           \$scope.alerts = [];
           \$scope.respuuid = [];
           var _selected;

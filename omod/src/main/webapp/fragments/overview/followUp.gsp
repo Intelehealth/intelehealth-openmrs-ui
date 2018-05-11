@@ -4,18 +4,16 @@
 		<h3>Follow Up</h3>
 	</div>
 	<div class="info-body">
-		<br/>
-		<div>
+		<div ng-show="visitStatus">
 		        <input type="text" b-datepicker ng-model="followup_date" placeholder="Follow Up Date"/>
 		        <button type="button" class="btn" data-toggle="datepicker"> <i class="icon-calendar"></i>
 		        </button>
 				<input type="text" style = 'margin-top : 10px; margin-left : 10px;' ng-model = 'advice'placeholder="Follow Up Advice">
 				<button type="button" ng-click = 'addtype()' ng-show = "alerts.length == 0">Schedule a Follow Up</button>
 				{{errortext}}
-				<br>
-				<br/>
+			</div>
+			<br>
 				<div uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + (alert.type || 'info')" close="closeAlert(\$index)">{{alert.msg}}</div>
-		</div>
 		</div>
 		<div>
 		<p>*please delete current schedule to schedule a new follow up.</p>
@@ -92,19 +90,11 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 					}, function(error) {
 					console.log(error);
 				});
-	\$timeout(function(){
-		var promise = EncounterFactory.getEncounter().then(function(d){
-			var length = d.length;
-		if(length > 0) {
-			angular.forEach(d, function(value, key){
-				\$scope.data = value.uuid;
-			});
-		}
-		return \$scope.data;
-		});
-		promise.then(function(x){
-		\$scope.data3 = x;
+
+			\$timeout(function (){
 			\$scope.addtype = function(){
+				if(EncounterFactory.encounterValue){
+
 				\$scope.followup = \$scope.followup_date;
 				if(\$scope.advice){
 					\$scope.followup += ', Advice: ' + \$scope.advice;
@@ -122,7 +112,7 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 															person: patient,
 															obsDatetime: date2,
 															value: \$scope.followup,
-															encounter: \$scope.data3
+															encounter: EncounterFactory.encounterValue
 											}
 											\$scope.followup_date = '';
 											\$scope.advice = '';
@@ -141,6 +131,11 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 												\$scope.statuscode = "Failed to create Obs";
 											});
 				}
+			}
+			else {
+				alert("If there are multiple reloads, please contact system admin.");
+				window.location.reload(true);
+			}
 };
 			\$scope.closeAlert = function(index) {
 	  		if (\$scope.visitStatus) {
@@ -155,8 +150,7 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 	                	});
 	        }
   		};
-		});
-	},5000);
+		}, 5000);
 });
 
 </script>

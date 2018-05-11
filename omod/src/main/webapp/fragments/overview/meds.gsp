@@ -37,7 +37,7 @@
 		<br>
 		<a href = "#" uib-alert style= "display: inline-block; padding-left: 5px; outline: none; font-style: italic;" ng-repeat="visit in recentVisitsNew" ng-click = "myFunc(visit.uuid)">
 			{{visit.display | visitdate | date: 'dd.MMM.yyyy'}}</a>
-			<a href="#" style= "display: inline-block; padding-left: 5px; outline: none; font-style: bold;" ng-click = "closeOldAlert()">Close</a>
+			<a href="#" ng-show = "alertsold" style= "display: inline-block; padding-left: 5px; outline: none; font-style: bold;" ng-click = "closeOldAlert()">Close</a>
 		<div ng-show = "!old" uib-alert ng-repeat = "indi in alertsold track by \$index" ng-class="'alert-' + (alert.type || 'info')">
 		{{indi.msg}}
 		<div style= "display: inline-block;">
@@ -271,20 +271,10 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
   })
 
   \$timeout(function () {
-  	var promise = EncounterFactory.getEncounter().then(function(d){
-  		var length = d.length;
-		if(length > 0) {
-			angular.forEach(d, function(value, key){
-				\$scope.data = value.uuid;
-			});
-		}
-		return \$scope.data;
-  	});
 
-  	promise.then(function(x){
-      \$scope.data3 = x;
 			//Add old Obs
 			\$scope.addold = function (y) {
+				if(EncounterFactory.encounterValue){
 
 				if (\$scope.alerts.indexOf(\$scope.addMe) == -1){
 								\$scope.alerts.push({msg: y})
@@ -294,7 +284,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 															person: patient,
 															obsDatetime: date2,
 															value: y,
-															encounter: \$scope.data3
+															encounter: EncounterFactory.encounterValue
 											}
 											\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
 												if(response.data) {
@@ -310,6 +300,11 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 												\$scope.statuscode = "Failed to create Obs";
 											});
 				}
+			}
+			else {
+				alert("If there are multiple reloads, please contact system admin.");
+				window.location.reload(true);
+			}
 			};
 
 			\$scope.editText = (x,i) => {
@@ -318,6 +313,8 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 				\$scope.particular = i;
 
 			\$scope.submit = () =>{
+				if(EncounterFactory.encounterValue){
+
 				var bla = \$('#newId').val();
 				if (\$scope.alerts.indexOf(\$scope.addMe) == -1){
 				\$scope.alerts.push({msg: bla})
@@ -327,7 +324,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 															person: patient,
 															obsDatetime: date2,
 															value: bla,
-															encounter: \$scope.data3
+															encounter: EncounterFactory.encounterValue
 											}
 											\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
 												if(response.data) {
@@ -345,11 +342,18 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 											});
 				}
 				\$scope.edit = false;
+		}
+		else {
+			alert("If there are multiple reloads, please contact system admin.");
+			window.location.reload(true);
+		}
 			};
-			};
+		};
 
   		\$scope.addAlert = function() {
-        		\$scope.errortext = "";
+			if(EncounterFactory.encounterValue){
+
+      \$scope.errortext = "";
 			var alertText = "";
 			\$scope.myColor = "white";
         		if (!\$scope.addMe | !\$scope.dose | !\$scope.doseUnits | !\$scope.frequency | !\$scope.duration | \$scope.durationUnits) {
@@ -381,7 +385,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                                 	person: patient,
                                 	obsDatetime: date2,
                                 	value: alertText,
-                                	encounter: \$scope.data3
+                                	encounter: EncounterFactory.encounterValue
                         	}
 
 				\$scope.dose = "";
@@ -407,6 +411,11 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                         		\$scope.statuscode = "Failed to create Obs";
                         	});
         		}
+						}
+						else {
+							alert("If there are multiple reloads, please contact system admin.");
+							window.location.reload(true);
+						}
   		};
 
   		\$scope.closeAlert = function(index) {
@@ -422,7 +431,6 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                 });
 			}
   		};
-  	});
   }, 5000);
 });
 </script>
