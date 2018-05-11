@@ -79,7 +79,7 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
         }
       };
     });
-    app.directive('autocomplete', function(\$compile, \$timeout, \$http, DiagnosisFactory1) {
+    app.directive('autocomplete', function(\$compile, \$timeout, \$http, DiagnosisFactory1, EncounterFactory) {
         return function(scope, element, attrs) {
             // I don't know how to use an angular template programmatically, so use an underscore template instead. :-(
             var itemFormatter = _.template(\$('#' + attrs.itemformatter).html());
@@ -112,19 +112,12 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
                         scope.encounterDiagnoses.addDiagnosis(diagnoses.Diagnosis(ui.item));
                         var topost = diagnoses.Diagnosis(ui.item);
                         \$timeout(function () {
-                                var promise = DiagnosisFactory1.async().then(function(d){
-                                        var length = d.length;
-                                        if(length > 0) {
-                                                angular.forEach(d, function(value, key){
-                                                        scope.data = value.uuid;
-                                                });
-                                        }
-                                        return scope.data;
-                                });
         scope.patient = "${ patient.uuid }";
         scope.addMe1 = topost.diagnosis.matchedName;
-				promise.then(function(x){
+
           scope.addAlert = function(){
+            if(EncounterFactory.encounterValue){
+
             scope.errortext = '';
             var alertText = '';
             var date2 = new Date();
@@ -147,7 +140,7 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
                       person: scope.patient,
                       obsDatetime: date2,
                       value: alertText,
-                      encounter: x
+                      encounter: EncounterFactory.encounterValue
               }
               scope.prisec = 'Primary';
               scope.confirm = '';
@@ -165,8 +158,12 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
                         scope.statuscode = "Failed to create Obs";
               });
             }
+          }
+          else {
+						alert("If there are multiple reloads, please contact system admin.");
+            window.location.reload(true);
+					}
           };
-      });
     }, 1000);
                     });
                     return false;
@@ -179,7 +176,7 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
         }
     });
     app.controller('DiagnosesController', [ '\$scope', '\$http' , '\$timeout', 'DiagnosisFactory1', 'recentVisitFactory',
-        function DiagnosesController(\$scope, \$http, \$timeout, DiagnosisFactory1, recentVisitFactory) {
+        function DiagnosesController(\$scope, \$http, \$timeout, DiagnosisFactory1, recentVisitFactory, EncounterFactory) {
           \$scope.alerts = [];
           \$scope.respuuid = [];
           var _selected;

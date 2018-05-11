@@ -95,19 +95,9 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
   })
 
   \$timeout(function () {
-  	var promise = EncounterFactory.getEncounter().then(function(d){
-  		var length = d.length;
-		if(length > 0) {
-			angular.forEach(d, function(value, key){
-				\$scope.data = value.uuid;
-			});
-		}
-		return \$scope.data;
-  	});
-
-  	promise.then(function(x){
-      \$scope.data3 = x;
       \$scope.addAlert = function() {
+				if(EncounterFactory.encounterValue) {
+
         		\$scope.errortext = "";
         		if (!\$scope.addMe) {
                 		\$scope.errortext = "Please enter text.";
@@ -121,7 +111,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                                 	person: patient,
                                 	obsDatetime: date2,
                                 	value: \$scope.addMe,
-                                	encounter: \$scope.data3
+                                	encounter: EncounterFactory.encounterValue
                         	}
                         	\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
                         		if(response.data){
@@ -138,6 +128,11 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                         		\$scope.statuscode = "Failed to create Obs";
                         	});
         		}
+					}
+					else {
+						alert("If there are multiple reloads, please contact system admin.");
+						window.location.reload(true);
+					}
 
 };
   		\$scope.closeAlert = function(index) {
@@ -153,7 +148,6 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 	                	});
 	        }
         };
-  	});
   }, 5000);
 });
 </script>

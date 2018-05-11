@@ -162,20 +162,10 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
   })
 
   \$timeout(function () {
-  	var promise = EncounterFactory.getEncounter().then(function(d){
-  		var length = d.length;
-		if(length > 0) {
-			angular.forEach(d, function(value, key){
-				\$scope.data = value.uuid;
-			});
-		}
-		return \$scope.data;
-  	});
-
-  	promise.then(function(x){
-      \$scope.data3 = x;
   		\$scope.addAlert = function() {
-        		\$scope.errortext = "";
+			if(EncounterFactory.encounterValue){
+
+      \$scope.errortext = "";
 			var alertText = "";
 			\$scope.myColor = "white";
         		if (!\$scope.addMe | !\$scope.dose | !\$scope.doseUnits | !\$scope.frequency | !\$scope.duration | \$scope.durationUnits) {
@@ -207,7 +197,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                                 	person: patient,
                                 	obsDatetime: date2,
                                 	value: alertText,
-                                	encounter: \$scope.data3
+                                	encounter: EncounterFactory.encounterValue
                         	}
 
 				\$scope.dose = "";
@@ -233,6 +223,11 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                         		\$scope.statuscode = "Failed to create Obs";
                         	});
         		}
+						}
+						else {
+							alert("If there are multiple reloads, please contact system admin.");
+							window.location.reload(true);
+						}
   		};
 
   		\$scope.closeAlert = function(index) {
@@ -248,7 +243,6 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                 });
 			}
   		};
-  	});
   }, 5000);
 
 
