@@ -163,7 +163,9 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 
   \$timeout(function () {
   		\$scope.addAlert = function() {
-        		\$scope.errortext = "";
+			if(EncounterFactory.encounterValue){
+
+      \$scope.errortext = "";
 			var alertText = "";
 			\$scope.myColor = "white";
         		if (!\$scope.addMe | !\$scope.dose | !\$scope.doseUnits | !\$scope.frequency | !\$scope.duration | \$scope.durationUnits) {
@@ -221,6 +223,11 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                         		\$scope.statuscode = "Failed to create Obs";
                         	});
         		}
+						}
+						else {
+							alert("If there are multiple reloads, please contact system admin.");
+							window.location.reload(true);
+						}
   		};
 
   		\$scope.closeAlert = function(index) {

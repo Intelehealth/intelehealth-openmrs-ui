@@ -103,6 +103,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 
   \$timeout(function () {
                 \$scope.addAlert = function() {
+									if(EncounterFactory.encounterValue) {
                         \$scope.errortext = "";
                         if (!\$scope.addMe) {
                                 \$scope.errortext = "Please enter text.";
@@ -133,6 +134,11 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                 			\$scope.statuscode = "Failed to create Obs";
     				});
     			}
+				}
+				else {
+					alert("If there are multiple reloads, please contact system admin.");
+					window.location.reload(true);
+				}
   		};
 
 	  		\$scope.closeAlert = function(index) {

@@ -95,6 +95,8 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 
 			\$timeout(function (){
 			\$scope.addtype = function(){
+				if(EncounterFactory.encounterValue){
+
 				\$scope.followup = \$scope.followup_date;
 				if(\$scope.advice){
 					\$scope.followup += ', Advice: ' + \$scope.advice;
@@ -131,6 +133,11 @@ myApp.controller('Ctrl', function(\$scope, \$http, \$timeout, EncounterFactory, 
 												\$scope.statuscode = "Failed to create Obs";
 											});
 				}
+			}
+			else {
+				alert("If there are multiple reloads, please contact system admin.");
+				window.location.reload(true);
+			}
 };
 			\$scope.closeAlert = function(index) {
 	  		if (\$scope.visitStatus) {

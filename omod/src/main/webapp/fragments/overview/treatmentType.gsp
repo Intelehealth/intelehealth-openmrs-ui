@@ -84,11 +84,13 @@
 					}, function(error) {
 					console.log(error);
 				});
-				
+
 	\$scope.types = ['Ayurvedic', 'Allopathic', 'Combination'];
 
 	\$timeout(function(){
 			\$scope.addtype = function(){
+				if(EncounterFactory.encounterValue){
+
 				\$scope.errortext = "";
 				if (!\$scope.treatment) {
 								\$scope.errortext = "Please enter text.";
@@ -119,6 +121,11 @@
 												console.log(response);
 												\$scope.statuscode = "Failed to create Obs";
 											});
+				}
+				}
+				else {
+					alert("If there are multiple reloads, please contact system admin.");
+					window.location.reload(true);
 				}
 };
 			\$scope.closeAlert = function(index) {

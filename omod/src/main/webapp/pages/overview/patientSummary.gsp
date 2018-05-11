@@ -122,7 +122,6 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
   								if(encounter.match("Visit Note") !== null) {
                     // To get encounter value for fragments if encounter already exists!
                     EncounterFactory.encounterValue = value.uuid;
-  									visitNoteEncounterUuid = encounterUuid;
   									isVisitNotePresent = true;
   								}
   							});
@@ -165,12 +164,6 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
   					}, function(error) {
   						console.log(error);
   					});
-
-            \$timeout(function () {
-              
-            }, 1000);
-
-
 });
 
 </script>

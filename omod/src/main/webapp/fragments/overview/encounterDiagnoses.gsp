@@ -116,6 +116,8 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
         scope.addMe1 = topost.diagnosis.matchedName;
 
           scope.addAlert = function(){
+            if(EncounterFactory.encounterValue){
+
             scope.errortext = '';
             var alertText = '';
             var date2 = new Date();
@@ -156,6 +158,11 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
                         scope.statuscode = "Failed to create Obs";
               });
             }
+          }
+          else {
+						alert("If there are multiple reloads, please contact system admin.");
+            window.location.reload(true);
+					}
           };
     }, 1000);
                     });
