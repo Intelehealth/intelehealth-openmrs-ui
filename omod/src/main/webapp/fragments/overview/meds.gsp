@@ -31,11 +31,46 @@
 		<br/>
 		<div uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + (alert.type || 'info')" close="closeAlert(\$index)">{{alert.msg}}</div>
 	</div>
-  <br>
+<br>
+<div class = "info-body" ng-show="visitStatus">
+	<strong style= "padding-left: 5px;"><u>Old Visits</u></strong>
+		<br>
+		<a href = "#" uib-alert style= "display: inline-block; padding-left: 5px; outline: none; font-style: italic;" ng-repeat="visit in recentVisitsNew" ng-click = "myFunc(visit.uuid)">
+			{{visit.display | visitdate | date: 'dd.MMM.yyyy'}}</a>
+			<a href="#" style= "display: inline-block; padding-left: 5px; outline: none; font-style: bold;" ng-click = "closeOldAlert()">Close</a>
+		<div ng-show = "!old" uib-alert ng-repeat = "indi in alertsold track by \$index" ng-class="'alert-' + (alert.type || 'info')">
+		{{indi.msg}}
+		<div style= "display: inline-block;">
+			<button type="button" name="button" ng-click="editText(indi.msg, \$index)">Edit</button>
+			<button type="button" name="button" ng-click="addold(indi.msg)">Prescribe this medication</button>
+		</div>
+		<br>
+		<div style= "margin-top: 15px;" ng-if = "edit && particular == \$index">
+		<input id = 'newId' style= "width: 100%;" type="text" ng-model = "new" ng-value = "newValue" ng-model-options="{updateOn: 'blur'}">
+			<button style= "margin-top: 5px;" type="button" name="button" ng-click = "submit()">Prescribe</button>
+		</input>
+		</div>
+		</div>
+</div>
+<br>
 </div>
 
 <script>
 var app = angular.module('medsSummary', ['ngAnimate', 'ngSanitize', 'recentVisit', 'EncounterModule']);
+
+recentVisits.filter('visitdate', function() {
+	return function(text) {
+		text = text || "";
+
+		var str = text;
+		var i = str.indexOf("-");
+		var str = str.substr(i + 1, 11);
+		var date = str.substr(4,2);
+		date = date + "/" + str.substr(1,3) + str.substr(7,4);
+		var newDate =new Date(date);
+		return newDate;
+	};
+});
 
 app.factory('MedsListFactory3', function(\$http){
   return {
@@ -73,7 +108,12 @@ app.controller('MedsSummaryController', function(\$scope, \$http, \$timeout, Enc
 var _selected;
 var patient = "${ patient.uuid }";
 var date2 = new Date();
-
+\$scope.recentVisitsNew = [];
+\$scope.old = true;
+\$scope.edit = false;
+\$scope.visitList = [];
+\$scope.visitDetails = {};
+\$scope.patientId = window.location.search.split('=')[1];
 var path = window.location.search;
 var i = path.indexOf("visitId=");
 var visitId = path.substr(i + 8, path.length);
@@ -83,6 +123,75 @@ var visitId = path.substr(i + 8, path.length);
 \$scope.visitNotePresent = true;
 \$scope.visitStatus = false;
 \$scope.encounterUuid = "";
+
+\$scope.closeOldAlert = () => {
+	\$scope.old = true;
+};
+//Fetch Old Visits
+recentVisitFactory.fetchRecentVisits().then(
+		function(data) {
+			\$scope.visitList = data.data.results;
+			\$scope.links = [];
+			angular.forEach(\$scope.visitList, function(value, key) {
+				if(patient === value.patient.uuid){
+					var visituuid = value.uuid;
+					recentVisitFactory.fetchVisitDetails(visituuid).then(function(data) {
+						\$scope.visitDetails = data.data;
+						if (\$scope.visitDetails.stopDatetime) {
+							\$scope.recentVisitsNew.push(value);
+						}
+
+						else {
+						}
+
+					}, function(error) {
+						//error
+					});
+				}
+
+				else{
+				}
+
+			});
+		}, function(error) {
+			//error
+		});
+//Fetch Old Obs
+		\$scope.myFunc = (x) => {
+			\$scope.alertsold = [];
+			\$scope.old = false;
+			recentVisitFactory.fetchVisitEncounterObs(x).then(function(data) {
+					\$scope.visitDetails = data.data;
+					\$scope.visitEncounters = data.data.encounters;
+					if(\$scope.visitEncounters.length !== 0) {
+					\$scope.visitNotePresent = true;
+						angular.forEach(\$scope.visitEncounters, function(value, key){
+							var isVital = value.display;
+							if(isVital.match("Visit Note") !== null) {
+								\$scope.encounterUuid = value.uuid;
+								var encounterUrl =  "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter/" + \$scope.encounterUuid;
+								\$http.get(encounterUrl).then(function(response) {
+									angular.forEach(response.data.obs, function(v, k){
+										var encounter = v.display;
+										if(encounter.match("MEDICATIONS") !== null) {
+										\$scope.alertsold.push({"msg":v.display.slice(16,v.display.length), "uuid":v.uuid});
+										}
+									});
+								}, function(response) {
+									\$scope.error = "Get Encounter Obs Went Wrong";
+							    	\$scope.statuscode = response.status;
+							    });
+							}
+						});
+					}
+					else {
+						\$scope.visitNotePresent = false;
+					}
+					}, function(error) {
+					console.log(error);
+				});
+		};
+
 recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 						\$scope.visitDetails = data.data;
 							if (\$scope.visitDetails.stopDatetime == null || \$scope.visitDetails.stopDatetime == undefined) {
@@ -174,6 +283,71 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 
   	promise.then(function(x){
       \$scope.data3 = x;
+			//Add old Obs
+			\$scope.addold = function (y) {
+
+				if (\$scope.alerts.indexOf(\$scope.addMe) == -1){
+								\$scope.alerts.push({msg: y})
+		var url2 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/obs";
+											\$scope.json = {
+												concept: window.constantConfigObj.conceptMedication,
+															person: patient,
+															obsDatetime: date2,
+															value: y,
+															encounter: \$scope.data3
+											}
+											\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
+												if(response.data) {
+																\$scope.statuscode = "Success";
+																			angular.forEach(\$scope.alerts, function(v, k){
+									var encounter = v.msg;
+									if(encounter.match(y) !== null) {
+									v.uuid = response.data.uuid;
+									}
+								});
+														 }
+											}, function(response){
+												\$scope.statuscode = "Failed to create Obs";
+											});
+				}
+			};
+
+			\$scope.editText = (x,i) => {
+				\$scope.edit = true;
+				\$scope.newValue = x;
+				\$scope.particular = i;
+
+			\$scope.submit = () =>{
+				var bla = \$('#newId').val();
+				if (\$scope.alerts.indexOf(\$scope.addMe) == -1){
+				\$scope.alerts.push({msg: bla})
+				var url2 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/obs";
+											\$scope.json = {
+												concept: window.constantConfigObj.conceptMedication,
+															person: patient,
+															obsDatetime: date2,
+															value: bla,
+															encounter: \$scope.data3
+											}
+											\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
+												if(response.data) {
+																\$scope.statuscode = "Success";
+																			angular.forEach(\$scope.alerts, function(v, k){
+									var encounter = v.msg;
+									if(encounter.match(bla) !== null) {
+									v.uuid = response.data.uuid;
+									}
+								});
+								// \$scope.old = "";
+									 }
+											}, function(response){
+												\$scope.statuscode = "Failed to create Obs";
+											});
+				}
+				\$scope.edit = false;
+			};
+			};
+
   		\$scope.addAlert = function() {
         		\$scope.errortext = "";
 			var alertText = "";
@@ -250,8 +424,6 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
   		};
   	});
   }, 5000);
-
-
 });
 </script>
 

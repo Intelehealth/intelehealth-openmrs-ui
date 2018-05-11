@@ -24,5 +24,5 @@ recentVisits.controller('recentVisitController', function($scope, $http,
 				});
 			}, function(error) {
 				console.log(error);
-			})
+			});
 });

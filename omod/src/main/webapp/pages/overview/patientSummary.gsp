@@ -15,6 +15,7 @@
     ui.includeJavascript("intelehealth", "constants.js")
     ui.includeJavascript("intelehealth", "recent_visits/recent_visits.module.js")
     ui.includeJavascript("intelehealth", "recent_visits/recent_visits.service.js")
+    ui.includeJavascript("intelehealth", "recent_visits/recent_visits.controller.js")
     ui.includeJavascript("intelehealth", "intelehealth_patient_profile_image/intelehealth_patient_profile_image.module.js")
     ui.includeJavascript("intelehealth", "intelehealth_patient_profile_image/intelehealth_patient_profile_image.service.js")
     ui.includeJavascript("intelehealth", "intelehealth_patient_profile_image/intelehealth_patient_profile_image.controller.js")

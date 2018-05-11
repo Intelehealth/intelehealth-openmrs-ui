@@ -67,7 +67,6 @@
 							 \$http.get(encounterUrl).then(function(response) {
 							 	angular.forEach(response.data.obs, function(v, k){
 								var encounter = v.display;
-								console.log(encounter);
 								if(encounter.match("Treatment Type.") !== null) {
 									\$scope.alerts.push({"msg":v.display.slice(16,v.display.length), "uuid": v.uuid});
 									}
