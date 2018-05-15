@@ -118,7 +118,7 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
                   if(encounter.match("RHPT-Interpretation") !== null) {
                     // To get encounter value for fragments if encounter already exists!
                     EncounterFactory.rhpt_encounter = value.uuid;
-  									isVisitNotePresent = false;
+  									isVisitNotePresent = true;
   								}
   							});
   						}

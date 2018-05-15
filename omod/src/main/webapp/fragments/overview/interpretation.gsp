@@ -206,7 +206,6 @@
 												for(i=0;i<\$scope.arraynew.length;i++){
 
 														if (\$scope.alerts.indexOf(\$scope.arraynew[i]) == -1){
-															\$scope.alerts.push({msg: \$scope.arraynew[i].name + \$scope.arraynew[i].value});
 															var url2 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/obs";
 															\$scope.json = {
 																	concept: \$scope.arraynew[i].conceptId,
@@ -220,18 +219,20 @@
 															});
 
 															promise.then(function (response) {
+																debugger;
+																\$scope.alerts.push({msg: response.data.display, uuid: response.data.uuid});
+																//\$scope.alerts.push({msg: \$scope.arraynew[i].name + \$scope.arraynew[i].value, flag: 'false'});
 																\$scope.statuscode = "Success";
-																				angular.forEach(\$scope.alerts, function(value, key){
-																					if(!value.uuid){
-																		\$scope.encounter = value.msg;
-																		angular.forEach(\$scope.arraynew, function(v,k){
-																			var abc = v.name + v.value;
-																			if(\$scope.encounter.match(abc) !== null) {
-																			value.uuid = response.data.uuid;
-																			}
-																		});
-																	}
-																});
+																// 				angular.forEach(\$scope.alerts, function(value, key){
+																// 					debugger;
+																// 		\$scope.encounter = value.msg;
+																// 		angular.forEach(\$scope.arraynew, function(v,k){
+																// 			var abc = v.name + v.value;
+																// 			if(\$scope.encounter.match(abc) !== null) {
+																// 			value.uuid = response.data.uuid;
+																// 			}
+																// 		});
+																// });
 															});
 
 														}
