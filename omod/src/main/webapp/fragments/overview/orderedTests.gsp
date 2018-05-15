@@ -122,6 +122,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
                 				\$scope.statuscode = "Success";
                 				angular.forEach(\$scope.alerts, function(v, k){
 										var encounter = v.msg;
+										debugger;
 										if(encounter.match(\$scope.addMe) !== null) {
 										v.uuid = response.data.uuid;
 										}

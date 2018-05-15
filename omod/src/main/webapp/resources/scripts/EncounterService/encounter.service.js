@@ -18,7 +18,9 @@ encounterService.factory('EncounterFactory', ['$http', '$filter',function( $http
         });
       },
 
-      encounterValue: ''
+      encounterValue: '',
+
+      rhpt_encounter: ''
 
     };
   }

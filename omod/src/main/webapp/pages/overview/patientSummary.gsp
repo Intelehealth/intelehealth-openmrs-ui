@@ -66,6 +66,7 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient]) }
                     ${ui.includeFragment("intelehealth", "overview/history", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/complaint", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/exam", [patient: patient])}
+                    ${ui.includeFragment("intelehealth", "overview/interpretation", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/physicalExamImages", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/additionalDocsImages", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/encounterDiagnoses", [patient: patient, formFieldName: 'Consultation'])}
@@ -90,7 +91,7 @@ var visitId = path.substr(i + 8, path.length);
 var isVisitNotePresent = false;
 
 var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterModule', 'ngSanitize', 'TreatmentType',
-  'recentVisit', 'vitalsSummary', 'famhistSummary', 'historySummary', 'complaintSummary', 'examSummary', 'diagnoses',
+  'recentVisit', 'interpretation', 'vitalsSummary', 'famhistSummary', 'historySummary', 'complaintSummary', 'examSummary', 'diagnoses',
   'medsSummary', 'orderedTestsSummary', 'adviceSummary', 'intelehealthPatientProfileImage', 'intelehealthPhysicalExamination',
   'intelehealthAdditionalDocs', 'ui.bootstrap', 'additionalComments', 'FollowUp', 'ui.carousel']);
 
@@ -100,18 +101,6 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
   \$scope.isLoading = true;
   \$scope.visitEncounters = [];
   \$scope.visitObs = [];
-  //Function to get encounter UUID
-  var encounterValue = () => {
-    var promise = EncounterFactory.getEncounter().then(function(d){
-      var length = d.length;
-    if(length > 0) {
-      angular.forEach(d, function(value, key){
-        let data = value.uuid;
-        EncounterFactory.encounterValue = data;
-      });
-    }
-    });
-  };
   \$scope.visitNoteData = [];
   \$scope.visitStatus = false;
   recentVisitFactory.fetchVisitDetails(visitId).then(function(data) {
@@ -120,10 +109,16 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
   						if(\$scope.visitEncounters.length !== 0) {
   							angular.forEach(\$scope.visitEncounters, function(value, key){
   								var encounter = value.display;
+                  console.log(encounter);
   								if(encounter.match("Visit Note") !== null) {
                     // To get encounter value for fragments if encounter already exists!
                     EncounterFactory.encounterValue = value.uuid;
   									isVisitNotePresent = true;
+  								}
+                  if(encounter.match("RHPT-Interpretation") !== null) {
+                    // To get encounter value for fragments if encounter already exists!
+                    EncounterFactory.rhpt_encounter = value.uuid;
+  									isVisitNotePresent = false;
   								}
   							});
   						}
@@ -138,6 +133,7 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
                       \$http.get(url2).then(function(response){
                         angular.forEach(response.data.results, function(v, k){
     											var uuid = v.uuid;
+                          var rhpt_encounter = 'aa5f275f-ab3d-4efe-9bbb-7103b7a2c96d';
                           var url1 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter";
                           var json = {
                                       patient: patient,
@@ -153,6 +149,25 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
                               	\$scope.statuscode = "Success";
                                 // Set encounter value after creating new encounter
                                 EncounterFactory.encounterValue = response.data.uuid;
+                          }, function(response){
+                            \$scope.statuscode = "Failed to create Encounter";
+                          });
+                          //RHPT interpretation encounter
+                          var rhpt_json = {
+                                      patient: patient,
+                                      encounterType: rhpt_encounter,
+                                      encounterProviders:[{
+                                        provider: uuid,
+                                        encounterRole: window.constantConfigObj.encounterRoleDoctor
+                                      }],
+                                      visit: visitId,
+                                      encounterDatetime: date2
+                                    };
+                                    debugger;
+                          \$http.post(url1, JSON.stringify(rhpt_json)).then(function(response){
+                              	\$scope.statuscode = "Success";
+                                // Set encounter value after creating new encounter
+                                EncounterFactory.rhpt_encounter = response.data.uuid;
                           }, function(response){
                             \$scope.statuscode = "Failed to create Encounter";
                           });
