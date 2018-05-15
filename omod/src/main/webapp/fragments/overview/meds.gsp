@@ -277,7 +277,6 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 				if(EncounterFactory.encounterValue){
 
 				if (\$scope.alerts.indexOf(\$scope.addMe) == -1){
-								\$scope.alerts.push({msg: y})
 		var url2 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/obs";
 											\$scope.json = {
 												concept: window.constantConfigObj.conceptMedication,
@@ -287,15 +286,8 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 															encounter: EncounterFactory.encounterValue
 											}
 											\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
-												if(response.data) {
-																\$scope.statuscode = "Success";
-																			angular.forEach(\$scope.alerts, function(v, k){
-									var encounter = v.msg;
-									if(encounter.match(y) !== null) {
-									v.uuid = response.data.uuid;
-									}
-								});
-														 }
+												\$scope.alerts.push({msg: response.data.display.slice(16,response.data.display.length)
+													, uuid: response.data.uuid});
 											}, function(response){
 												\$scope.statuscode = "Failed to create Obs";
 											});
@@ -317,7 +309,6 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 
 				var bla = \$('#newId').val();
 				if (\$scope.alerts.indexOf(\$scope.addMe) == -1){
-				\$scope.alerts.push({msg: bla})
 				var url2 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/obs";
 											\$scope.json = {
 												concept: window.constantConfigObj.conceptMedication,
@@ -327,16 +318,8 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 															encounter: EncounterFactory.encounterValue
 											}
 											\$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
-												if(response.data) {
-																\$scope.statuscode = "Success";
-																			angular.forEach(\$scope.alerts, function(v, k){
-									var encounter = v.msg;
-									if(encounter.match(bla) !== null) {
-									v.uuid = response.data.uuid;
-									}
-								});
-								// \$scope.old = "";
-									 }
+												\$scope.alerts.push({msg: response.data.display.slice(16,response.data.display.length)
+													, uuid: response.data.uuid});
 											}, function(response){
 												\$scope.statuscode = "Failed to create Obs";
 											});
