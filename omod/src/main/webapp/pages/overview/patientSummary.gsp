@@ -41,7 +41,6 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient]) }
       <br>
       <div id = "jumper">
         <i class="icon-comments"><a href="#comments">Doctor's Note</a></i>
-        <i class="icon-comments"><a href="#treatment">Treatment Type</a></i>
         <i class="icon-medicine"><a href="#meds">Prescribed Medication</a></i>
         <i class="icon-beaker"><a href="#orderedTests">Prescribed Tests</a></i>
         <i class="icon-comments"><a href="#advice">Medical Advice</a></i>
@@ -69,7 +68,6 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient]) }
                     ${ui.includeFragment("intelehealth", "overview/additionalDocsImages", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/encounterDiagnoses", [patient: patient, formFieldName: 'Consultation'])}
                     ${ui.includeFragment("intelehealth", "overview/additionalComments", [patient: patient])}
-                    ${ui.includeFragment("intelehealth", "overview/treatmentType", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/meds", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/orderedTests", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/advice", [patient: patient])}
@@ -88,7 +86,7 @@ var i = path.indexOf("visitId=");
 var visitId = path.substr(i + 8, path.length);
 var isVisitNotePresent = false;
 
-var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterModule', 'ngSanitize', 'TreatmentType',
+var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterModule', 'ngSanitize',
   'recentVisit', 'vitalsSummary', 'famhistSummary', 'historySummary', 'complaintSummary', 'examSummary', 'diagnoses',
   'medsSummary', 'orderedTestsSummary', 'adviceSummary', 'intelehealthPatientProfileImage', 'intelehealthPhysicalExamination',
   'intelehealthAdditionalDocs', 'ui.bootstrap', 'additionalComments', 'FollowUp', 'ui.carousel']);
