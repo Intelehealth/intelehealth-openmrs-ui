@@ -161,7 +161,6 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
                                       visit: visitId,
                                       encounterDatetime: date2
                                     };
-                                    debugger;
                           \$http.post(url1, JSON.stringify(rhpt_json)).then(function(response){
                               	\$scope.statuscode = "Success";
                                 // Set encounter value after creating new encounter
