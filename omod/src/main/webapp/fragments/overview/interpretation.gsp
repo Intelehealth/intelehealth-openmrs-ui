@@ -219,20 +219,8 @@
 															});
 
 															promise.then(function (response) {
-																debugger;
 																\$scope.alerts.push({msg: response.data.display, uuid: response.data.uuid});
-																//\$scope.alerts.push({msg: \$scope.arraynew[i].name + \$scope.arraynew[i].value, flag: 'false'});
 																\$scope.statuscode = "Success";
-																// 				angular.forEach(\$scope.alerts, function(value, key){
-																// 					debugger;
-																// 		\$scope.encounter = value.msg;
-																// 		angular.forEach(\$scope.arraynew, function(v,k){
-																// 			var abc = v.name + v.value;
-																// 			if(\$scope.encounter.match(abc) !== null) {
-																// 			value.uuid = response.data.uuid;
-																// 			}
-																// 		});
-																// });
 															});
 
 														}

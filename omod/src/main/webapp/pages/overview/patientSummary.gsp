@@ -41,8 +41,8 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient]) }
         <i class="icon-diagnosis"><a href="#diagnosis">Diagnoses</a></i>
       <br>
       <div id = "jumper">
+        <i class="icon-book"><a href="#interpretation">Interpretation</a></i>
         <i class="icon-comments"><a href="#comments">Doctor's Note</a></i>
-        <i class="icon-comments"><a href="#treatment">Treatment Type</a></i>
         <i class="icon-medicine"><a href="#meds">Prescribed Medication</a></i>
         <i class="icon-beaker"><a href="#orderedTests">Prescribed Tests</a></i>
         <i class="icon-comments"><a href="#advice">Medical Advice</a></i>
@@ -66,12 +66,10 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient]) }
                     ${ui.includeFragment("intelehealth", "overview/history", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/complaint", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/exam", [patient: patient])}
-                    ${ui.includeFragment("intelehealth", "overview/interpretation", [patient: patient])}
-                    ${ui.includeFragment("intelehealth", "overview/physicalExamImages", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/additionalDocsImages", [patient: patient])}
+                    ${ui.includeFragment("intelehealth", "overview/interpretation", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/encounterDiagnoses", [patient: patient, formFieldName: 'Consultation'])}
                     ${ui.includeFragment("intelehealth", "overview/additionalComments", [patient: patient])}
-                    ${ui.includeFragment("intelehealth", "overview/treatmentType", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/meds", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/orderedTests", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/advice", [patient: patient])}
@@ -90,9 +88,9 @@ var i = path.indexOf("visitId=");
 var visitId = path.substr(i + 8, path.length);
 var isVisitNotePresent = false;
 
-var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterModule', 'ngSanitize', 'TreatmentType',
+var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterModule', 'ngSanitize',
   'recentVisit', 'interpretation', 'vitalsSummary', 'famhistSummary', 'historySummary', 'complaintSummary', 'examSummary', 'diagnoses',
-  'medsSummary', 'orderedTestsSummary', 'adviceSummary', 'intelehealthPatientProfileImage', 'intelehealthPhysicalExamination',
+  'medsSummary', 'orderedTestsSummary', 'adviceSummary', 'intelehealthPatientProfileImage',
   'intelehealthAdditionalDocs', 'ui.bootstrap', 'additionalComments', 'FollowUp', 'ui.carousel']);
 
 app.controller('PatientSummaryController', function(\$scope, \$http, recentVisitFactory, EncounterFactory, \$timeout) {
