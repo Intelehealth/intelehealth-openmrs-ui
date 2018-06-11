@@ -2,7 +2,7 @@ intelehealthPatientProfileImage.factory('intelehealthPatientProfileImageFactory'
 		function($http, $q) {
 			return {
 				fetchAdditionalDocuments : function(patientUuid) {
-					var url = "http://139.59.85.135:1337/parse/classes/Profile?where={\"PatientID\":\"" + patientUuid +"\"}";
+					var url = "http://162.243.160.40:1337/parse/classes/Profile?where={\"PatientID\":\"" + patientUuid +"\"}";
 					var headers = {headers:  {
 				        'X-Parse-Application-Id': 'app2',
 				        'X-Parse-REST-API-Key': 'undefined'
