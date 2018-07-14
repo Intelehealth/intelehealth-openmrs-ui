@@ -68,4 +68,4 @@ for more information
 By contributing, you agree that your contributions will be licensed under its MPL 2.0 License.
 
 ## References
-This document was adapted from the open-source contribution guidelines shared by [braindk](https://gist.github.com/briandk/3d2e8b3ec8daf5a27a62) for [Facebook's Draft](https://github.com/facebook/draft-js/blob/a9316a723f9e918afde44dea68b5f9f39b7d9b00/CONTRIBUTING.md)
+This document was adapted from the open-source contribution guidelines shared by [braindk](https://gist.github.com/briandk/3d2e8b3ec8daf5a27a62) which were adapted from [Facebook's Draft](https://github.com/facebook/draft-js/blob/a9316a723f9e918afde44dea68b5f9f39b7d9b00/CONTRIBUTING.md)
