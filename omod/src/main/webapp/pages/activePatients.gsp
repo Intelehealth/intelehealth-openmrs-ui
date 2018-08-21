@@ -16,8 +16,11 @@
 		<tr>
 			<th>${ ui.message("intelehealth.patient.identifier") }</th>
 			<th>${ ui.message("intelehealth.person.name") }</th>
-                        <th>${ ui.message("intelehealth.location") }</th>
+            <th> Gender</th>
+            <th> Age</th>
+            <th>${ ui.message("intelehealth.location") }</th>
 			<th>${ ui.message("intelehealth.activeVisits.lastSeen") }</th>
+      
 		</tr>
 	</thead>
 	<tbody>
@@ -30,16 +33,19 @@
 			def latest = v.lastEncounter
 		%>
 			<tr id="visit-${ v.visit.id }">
-				<td>${ ui.format(v.visit.patient.patientIdentifier) }</td>
+				<td data-id='${v.visit.patient.patientIdentifier}'>${ ui.format(v.visit.patient.patientIdentifier) }</td>
 				<td>
 
                     <!-- TODO: only add link to patient dashboard if user has appropriate privilege -->
                         <a href="${ ui.urlBind("/openmrs/intelehealth/intelehealthPatientDashboard.page?patientId=" + v.visit.patient.uuid, v.visit.patient) }">
 
                     ${ ui.format(v.visit.patient) }
-
                         </a>
-                </td>
+                        </td>
+
+                        <td id='gender' ></td>
+                        <td id='age' ></td>
+                
                                 <td>
                     <% if (latest) { %>
                             ${ ui.format(latest.location) }
@@ -55,6 +61,7 @@
 
                     <% } %>
 				</td>
+        
 			</tr>
 		<% } %>
 	</tbody>
@@ -73,3 +80,26 @@ ${ ui.includeFragment("uicommons", "widget/dataTable", [ object: "#active-visits
                                                                   ]
                                                         ]) }
 <% } %>
+<script type="text/javascript">
+
+\$('#active-visits tbody tr td:first-child').each ( function () {
+  let url = "/" + OPENMRS_CONTEXT_PATH +
+  "/ws/rest/v1/patient?v=custom%3A(uuid%2Cidentifiers%3A(identifierType%3A(name)%2Cidentifier)%2Cperson)&q="+\$(this).attr('data-id')
+  let that = this
+  \$.get(url, function (data) {
+    \$(that).closest('td').siblings('#gender').html(data.results[0].person.gender)
+  })
+})
+</script>
+
+<script type="text/javascript">
+
+\$('#active-visits tbody tr td:first-child').each ( function () {
+  let url = "/" + OPENMRS_CONTEXT_PATH +
+  "/ws/rest/v1/patient?v=custom%3A(uuid%2Cidentifiers%3A(identifierType%3A(name)%2Cidentifier)%2Cperson)&q="+\$(this).attr('data-id')
+  let that = this
+  \$.get(url, function (data) {
+    \$(that).closest('td').siblings('#age').html(data.results[0].person.age)
+  })
+})
+</script>
