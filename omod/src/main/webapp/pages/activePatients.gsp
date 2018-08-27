@@ -88,18 +88,8 @@ ${ ui.includeFragment("uicommons", "widget/dataTable", [ object: "#active-visits
   let that = this
   \$.get(url, function (data) {
     \$(that).closest('td').siblings('#gender').html(data.results[0].person.gender)
-  })
-})
-</script>
-
-<script type="text/javascript">
-
-\$('#active-visits tbody tr td:first-child').each ( function () {
-  let url = "/" + OPENMRS_CONTEXT_PATH +
-  "/ws/rest/v1/patient?v=custom%3A(uuid%2Cidentifiers%3A(identifierType%3A(name)%2Cidentifier)%2Cperson)&q="+\$(this).attr('data-id')
-  let that = this
-  \$.get(url, function (data) {
     \$(that).closest('td').siblings('#age').html(data.results[0].person.age)
   })
 })
 </script>
+
