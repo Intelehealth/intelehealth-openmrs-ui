@@ -60,10 +60,10 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient]) }
     <div class="clear"></div>
         <div class="dashboard clear" ng-app="patientSummary" ng-controller="PatientSummaryController">
             <div class="long-info-container column">
-                    ${ui.includeFragment("intelehealth", "overview/vitals", [patient: patient])}
-                    ${ui.includeFragment("intelehealth", "overview/famhist", [patient: patient])}
-                    ${ui.includeFragment("intelehealth", "overview/history", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/complaint", [patient: patient])}
+                    ${ui.includeFragment("intelehealth", "overview/history", [patient: patient])}
+                    ${ui.includeFragment("intelehealth", "overview/famhist", [patient: patient])}
+                    ${ui.includeFragment("intelehealth", "overview/vitals", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/exam", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/physicalExamImages", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/additionalDocsImages", [patient: patient])}
