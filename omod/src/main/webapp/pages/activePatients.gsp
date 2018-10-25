@@ -30,10 +30,11 @@
             </tr>
         <% } %>
 		<% visitSummaries.each { v ->
-			def latest = v.lastEncounter
-		%>
+            def latest = v.lastEncounter
+        %>
+        
 			<tr id="visit-${ v.visit.id }">
-				<td data-id='${v.visit.patient.patientIdentifier}'>${ ui.format(v.visit.patient.patientIdentifier) }</td>
+				<td data-id='${v.visit.patient.patientIdentifier}' data='${v.visit.uuid}'>${ ui.format(v.visit.patient.patientIdentifier) }</td>
 				<td>
 
                     <!-- TODO: only add link to patient dashboard if user has appropriate privilege -->
@@ -45,12 +46,9 @@
 
                         <td id='gender' ></td>
                         <td id='age' ></td>
+                        <td id='location' ></td>
                 
-                                <td>
-                    <% if (latest) { %>
-                            ${ ui.format(latest.location) }
-                    <% } %>
-                                </td>
+
 				<td>
                     <% if (latest) { %>
                         ${ ui.format(latest.encounterType) }
@@ -81,6 +79,7 @@ ${ ui.includeFragment("uicommons", "widget/dataTable", [ object: "#active-visits
                                                         ]) }
 <% } %>
 <script type="text/javascript">
+
 \$('#active-visits tbody tr td:first-child').each ( function () {
   let url = "/" + OPENMRS_CONTEXT_PATH +
   "/ws/rest/v1/patient?v=custom%3A(uuid%2Cidentifiers%3A(identifierType%3A(name)%2Cidentifier)%2Cperson)&q="+\$(this).attr('data-id')
@@ -88,6 +87,17 @@ ${ ui.includeFragment("uicommons", "widget/dataTable", [ object: "#active-visits
   \$.get(url, function (data) {
     \$(that).closest('td').siblings('#gender').html(data.results[0].person.gender)
     \$(that).closest('td').siblings('#age').html(data.results[0].person.age)
+  })
+})
+</script>
+
+<script>
+\$('#active-visits tbody tr td:first-child').each ( function () {
+  let url = "/" + OPENMRS_CONTEXT_PATH +
+  "/ws/rest/v1/visit/"+\$(this).attr('data')
+  let that = this
+  \$.get(url, function (data) {
+    \$(that).closest('td').siblings('#location').html(data.location.display)
   })
 })
 </script>
