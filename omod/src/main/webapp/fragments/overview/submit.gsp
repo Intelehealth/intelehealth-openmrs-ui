@@ -1,13 +1,9 @@
 <div id="sign" ng-controller = "SubmitController">
 <br>
-  <div class="info-header">
-		<i class="icon-save"></i>
-        <h3>Submit</h3>
-	</div>
 	<div class="info-body" ng-cloak>
     <br/>  
         <div align="center">
-        <button ng-click="submit()">Submit</button>
+        <button class='confirm' ng-click="submit()">Complete Visit</button>
         </div>
       <div align ="center">
       <br>
