@@ -1,6 +1,7 @@
 var constantConfigObj = {
 		encounterRoleDoctor: '73bbb069-9781-4afc-a9d1-54b6b2270e03',
 		encounterTypeVisitNote: 'd7151f82-c1f3-4152-a605-2f9ea7414a79',
+		encounterTypeVisitComplete: 'bd1fbfaa-f5fb-4ebd-b75c-564506fc309e',
 		conceptMedicalAdvice1: '0308000d-77a2-46e0-a6fa-a8c1dcbc3141',
 		conceptMedicalAdvice2: '67a050c1-35e5-451c-a4ab-fff9d57b0db1',
 		encounterTypeVitals: '67a71486-1a54-468f-ac3e-7091a9a79584',
