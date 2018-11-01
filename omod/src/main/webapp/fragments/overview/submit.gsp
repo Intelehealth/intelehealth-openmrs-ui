@@ -73,7 +73,7 @@ app.controller('SubmitController', function(\$scope, \$http, recentVisitFactory,
                                  var url1 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter";
                                  var json = {
                                              patient: patient,
-                                             encounterType: window.constantConfigObj.encounterTypeSeen,
+                                             encounterType: window.constantConfigObj.encounterTypeVisitComplete,
                                              encounterProviders:[{
                                                provider: uuid,
                                                encounterRole: window.constantConfigObj.encounterRoleDoctor
