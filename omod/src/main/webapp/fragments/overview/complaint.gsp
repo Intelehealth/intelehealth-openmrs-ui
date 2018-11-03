@@ -87,6 +87,7 @@ recentVisitFactory.fetchVisitEncounterObs(visitId).then(function(data) {
 		angular.forEach(\$scope.url2, function(item){
 			\$http.get(item)
 			      .then(function(response) {
+					  console.log(response)
 		  		   \$scope.objects.push(response.data);
 						 //\$scope.trustedHtml = \$sce.trustAsHtml(item);
 			      }, function(response) {
