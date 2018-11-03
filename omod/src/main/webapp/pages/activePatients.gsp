@@ -1,5 +1,6 @@
 <%
     ui.decorateWith("appui", "standardEmrPage")
+    ui.includeCss("intelehealth", "flaticon/font/flaticon.css")
     ui.includeJavascript("intelehealth", "constants.js")
 %>
 <script type="text/javascript">
@@ -14,51 +15,50 @@
 <table id="active-visits" width="100%" border="1" cellspacing="0" cellpadding="2">
 	<thead>
 		<tr>
-			<th>${ ui.message("intelehealth.patient.identifier")}</th>
+			<th>${ui.message("intelehealth.patient.identifier")}</th>
             <th>Flag</th>
-			<th>${ ui.message("intelehealth.person.name")}</th>
-            <th> Gender</th>
-            <th> Age</th>
-            <th>${ ui.message("intelehealth.location")}</th>
-			<th>${ ui.message("intelehealth.activeVisits.lastSeen")}</th>
+			<th>${ui.message("intelehealth.person.name")}</th>
+            <th>Gender</th>
+            <th>Age</th>
+            <th>${ui.message("intelehealth.location")}</th>
+			<th>${ui.message("intelehealth.activeVisits.lastSeen")}</th>
       
 		</tr>
 	</thead>
 	<tbody>
         <% if (visitSummaries == null || (visitSummaries !=null && visitSummaries.size() == 0) ) { %>
             <tr>
-                <td colspan="4">${ ui.message("intelehealth.none") }</td>
+                <td colspan="4">${ui.message("intelehealth.none")}</td>
             </tr>
         <% } %>
 		<% visitSummaries.each { v ->
             def latest = v.lastEncounter
         %>
         
-			<tr id="visit-${ v.visit.id }">
-				<td data-id='${v.visit.patient.patientIdentifier}' data='${v.visit.uuid}'>${ ui.format(v.visit.patient.patientIdentifier) }</td>
+			<tr id="visit-${v.visit.id}">
+				<td data-id='${v.visit.patient.patientIdentifier}' data='${v.visit.uuid}'>${(v.visit.patient.patientIdentifier)}</td>
 				<td id='flag'></td>
                 <td>
 
                     <!-- TODO: only add link to patient dashboard if user has appropriate privilege -->
-                        <a href="${ ui.urlBind("/openmrs/intelehealth/intelehealthPatientDashboard.page?patientId=" + v.visit.patient.uuid, v.visit.patient) }">
+                        <a href="${ui.urlBind("/openmrs/intelehealth/intelehealthPatientDashboard.page?patientId=" + v.visit.patient.uuid, v.visit.patient)}">
 
-                    ${ ui.format(v.visit.patient) }
+                    ${ui.format(v.visit.patient)}
                         </a>
                         </td>
 
-                        <td id='gender' ></td>
-                        <td id='age' ></td>
-                        <td id='location' ></td>
+                        <td id='gender'></td>
+                        <td id='age'></td>
+                        <td id='location'></td>
                 
 
 				<td>
                     <% if (latest) { %>
-                        ${ ui.format(latest.encounterType) }
+                        ${ui.format(latest.encounterType)}
                         <br/>
                         <small>
-                             ${ ui.format(latest.encounterDatetime) }
+                             ${ui.format(latest.encounterDatetime)}
                         </small>
-
                     <% } %>
 				</td>
         
@@ -80,7 +80,6 @@ ${ ui.includeFragment("uicommons", "widget/dataTable", [ object: "#active-visits
                                                                   ]
                                                         ]) }
 <% } %>
-<script type="text/javascript">
 
 <script type="text/javascript">
 \$('#active-visits tbody tr td:first-child').each ( function () {
@@ -104,6 +103,7 @@ ${ ui.includeFragment("uicommons", "widget/dataTable", [ object: "#active-visits
    
   })
 })
+</script>
 
 <script>
 \$('#active-visits tbody tr td:first-child').each ( function () {
