@@ -29,6 +29,7 @@ recentVisits.filter('vitalsDate', function() {
 	 recentVisitFactory.fetchRecentVisits().then(
 			 function(data) {
 				 $scope.visitList = data.data.results;
+				//  console.log('hi',data.data.results)
 				 $scope.links = [];
 				 var k = 0;
 				 angular.forEach($scope.visitList, function(value, key) {
@@ -40,43 +41,42 @@ recentVisits.filter('vitalsDate', function() {
 							  $scope.visitDetails = data.data;
 							 	$scope.visitid = data.data.uuid;
 							 recentVisitFactory.fetchVisitEncounterObs($scope.visitid).then(function(data) {
+								 console.log(data.data.display)
+								 var str = data.data.display
+								 var pattern=/[0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]/gi;
+								 var date = str.match(pattern)
+								 console.log(date)
 								$scope.visitDetails = data.data.encounters[1].obs;
 								angular.forEach($scope.visitDetails, (v) => {
 									var display = v.display
 									if (display.match("CURRENT COMPLAINT") !== null) {
 									var obs = display.split('<b>');
+									// console.log(obs)
+									var l = 0
+									$scope.observation[k] = new Array(obs.length-1)
 									for (var i = 1; i<obs.length; i++) {
-										var l = 0
 										var obs1 = obs[i].split('<')
 										var a = obs1[0]
-										$scope.observation[k] = new Array(obs.length-1)
 										$scope.observation[k][l] = a 
-										console.log('inner', $scope.observation)
 										l++;
-									}	
+									}
 								}
-								
-								value.obser= $scope.observation
+								})	
 								k++
-								console.log(value.obser) 
-								})
-								 
-								 
-								
 							 })
-							  
-							 
+								value.obser= $scope.observation
 							 if ($scope.visitDetails.stopDatetime == null || $scope.visitDetails.stopDatetime == undefined) {
 								 value.visitStatus = "Active";
 							 }
 							 $scope.recentVisits.push(value);	
-							
 						 }, function(error) {
 							 console.log(error);
 						 });
+						 	
 					 }
 					 
 				 });
+				  
 				 // RECENT VITALS
 				 if($scope.vitaluuid){
 					 let recent = $scope.vitaluuid[0];
@@ -138,6 +138,7 @@ recentVisits.filter('vitalsDate', function() {
 			 }, function(error) {
 				 console.log(error);
 			 });
+			 
 
 
 
@@ -176,5 +177,5 @@ recentVisits.filter('vitalsDate', function() {
 // 		$scope.error = "Get Visit Encounters Went Wrong";
 //         	$scope.statuscode = response.status;
 //     	});
- 
+ console.log($scope.observation)
  });
