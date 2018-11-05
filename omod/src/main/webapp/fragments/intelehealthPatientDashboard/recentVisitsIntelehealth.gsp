@@ -8,5 +8,6 @@
 		       	<a href='/openmrs/intelehealth/overview/patientSummary.page?patientId={{patientId}}&visitId={{visit.uuid}}' class="visit-link">{{visit.display | visitdate | date: 'dd.MMM.yyyy'}}</a>
 		       	<div class="tag" ng-if="visit.visitStatus">{{visit.visitStatus}}</div>
 	       </div>
+           <br>
     </div>
 </div>
