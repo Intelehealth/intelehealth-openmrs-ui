@@ -7,7 +7,7 @@
         </div>
       <div align ="center">
       <br>
-      <p>{{statuscode}}</p>
+      <p>{{statuscode1}}</p>
       </div>
   </div>
 </div>
@@ -54,7 +54,7 @@ app.controller('SubmitController', function(\$scope, \$http, recentVisitFactory,
        //This stores the value of encounter we got from response into the encounterValue object in Scripts-> EncounterService
                            EncounterFactory.encounterValue = value.uuid;
                                              isSeenPresent = true;
-                                             \$scope.statuscode = "Visit Already Completed";
+                                             \$scope.statuscode1 = "Visit Already Completed";
                                          }
                                      });
                                  }
@@ -84,12 +84,12 @@ app.controller('SubmitController', function(\$scope, \$http, recentVisitFactory,
                                            
                                           
         \$http.post(url1, JSON.stringify(json)).then(function(response){
-            \$scope.statuscode = "Visit Complete";
+            \$scope.statuscode1 = "Visit Complete";
        // On success response store the response uuid into the encounter object
        //This stores the value of encounter we got from response into the encounterValue object in Scripts-> EncounterService
             EncounterFactory.encounterValue = response.data.uuid;
         }, function(response){
-              \$scope.statuscode = "Failed to create Encounter";
+              \$scope.statuscode1 = "Failed to create Encounter";
               });
               });
               },function(response){
