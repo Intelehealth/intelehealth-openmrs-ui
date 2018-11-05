@@ -15,9 +15,11 @@ recentVisits.filter('vitalsDate', function() {
 		   return x.toFixed(1);
 	 };
  });
+
  
  recentVisits.controller('recentVisitController', function($scope, $http,
 		 $timeout, recentVisitFactory, $location) {
+	 var observation = {}
 	 $scope.recentVisits = [];
 	 $scope.visitList = [];
 	 $scope.visitDetails = {};
@@ -32,18 +34,37 @@ recentVisits.filter('vitalsDate', function() {
 				 angular.forEach($scope.visitList, function(value, key) {
 					 if($scope.patientId === value.patient.uuid){
 						 var uuid = value.uuid;
+						  $scope.uuid6 = value.uuid;
 						 $scope.vitaluuid.push(value.uuid);
 						 recentVisitFactory.fetchVisitDetails(uuid).then(function(data) {
-							 $scope.visitDetails = data.data;
+							  $scope.visitDetails = data.data;
+							  recentVisitFactory.fetchVisitEncounterObs(data.data.uuid).then(function(data) {
+									$scope.visitDetails = data.data.encounters[1].obs;
+									angular.forEach($scope.visitDetails, (v) => {
+									var display = v.display
+									if (display.match("CURRENT COMPLAINT") !== null) {
+									var obs = display.split('<b>');
+									var b = " "
+									for (var i = 1; i<obs.length; i++) {
+										var obs1 = obs[i].split('<')
+										var b = b + " | " + obs1[0]
+										value.observation = b
+									}
+								}
+								})	
+							 })
 							 if ($scope.visitDetails.stopDatetime == null || $scope.visitDetails.stopDatetime == undefined) {
 								 value.visitStatus = "Active";
 							 }
-							 $scope.recentVisits.push(value);
+							 $scope.recentVisits.push(value);	
 						 }, function(error) {
 							 console.log(error);
 						 });
+						 	
 					 }
+					 
 				 });
+				  
 				 // RECENT VITALS
 				 if($scope.vitaluuid){
 					 let recent = $scope.vitaluuid[0];
@@ -105,6 +126,4 @@ recentVisits.filter('vitalsDate', function() {
 			 }, function(error) {
 				 console.log(error);
 			 });
- 
- 
- });
+});
