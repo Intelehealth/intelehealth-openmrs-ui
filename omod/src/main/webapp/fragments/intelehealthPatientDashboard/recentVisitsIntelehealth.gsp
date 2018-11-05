@@ -9,9 +9,8 @@
               <span><b>{{visit.observation}}</b></span>
               <div class="tag" ng-if="visit.visitStatus">{{visit.visitStatus}}</div>   
 	       </div>
-           
-           </div> 
+
+           <br>
+    </div>
 </div>
 
-  
- 
