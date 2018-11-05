@@ -4,7 +4,7 @@
 
 <% /* This is an underscore template, since I dont know how to use angular templates programmatically */ %>
 
-<script ng-show="visitStatus" type="text/template" id="autocomplete-render-item">
+<script type="text/template" id="autocomplete-render-item">
     <span class="code">
         {{ if (item.code) { }}
         {{- item.code }}
@@ -30,6 +30,7 @@
         		<h3>Diagnoses</h3>
         	</div>
         	<div class="info-body" ng-cloak>
+            <div  ng-show="visitStatus">
         		<br/>
         		<input type="text" ng-model="addMe1" autocomplete itemFormatter="autocomplete-render-item"  class="form-control">
         		<button type="button" class='btn btn-default' ng-click="addAlert()">Add Diagnosis</button>
@@ -47,14 +48,15 @@
   		      </label>
             <br/>
             <label id = "diagnosis">
+              <input type="radio" value="Provisional" ng-model="confirm">
+                Provisional
+            </label>
+            <label id = "diagnosis">
               <input type="radio" value="Confirmed" ng-model="confirm">
                 Confirmed
             </label>
-            <label id = "diagnosis">
-              <input type="radio" value="Certain" ng-model="confirm">
-                Certain
-            </label>
           </div>
+        </div>
           <br>
         		<div uib-alert ng-repeat="alert in alerts" ng-class="'alert-' + (alert.type || 'info')" close="closeAlert(\$index)">{{alert.msg}}</div>
         	</div>
@@ -114,7 +116,7 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
                         \$timeout(function () {
         scope.patient = "${ patient.uuid }";
         scope.addMe1 = topost.diagnosis.matchedName;
-
+          // OLD CODE
           scope.addAlert = function(){
             if(EncounterFactory.encounterValue){
 
@@ -175,7 +177,7 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
             };
         }
     });
-    app.controller('DiagnosesController', [ '\$scope', '\$http' , '\$timeout', 'DiagnosisFactory1', 'recentVisitFactory',
+    app.controller('DiagnosesController', [ '\$scope', '\$http' , '\$timeout', 'DiagnosisFactory1', 'recentVisitFactory', 'EncounterFactory',
         function DiagnosesController(\$scope, \$http, \$timeout, DiagnosisFactory1, recentVisitFactory, EncounterFactory) {
           \$scope.alerts = [];
           \$scope.respuuid = [];
@@ -227,6 +229,63 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
         					}, function(error) {
         						console.log(error);
         					});
+
+                  // NEW CODE
+                  \$scope.addAlert = function(){
+                    if(EncounterFactory.encounterValue){
+                    \$scope.errortext = '';
+                    var alertText = '';
+                    var date2 = new Date();
+                    \$scope.mycolor = 'white';
+                    if(!\$scope.addMe1){
+                      \$scope.errortext = 'Please enter text.';
+                      if(!\$scope.addMe1){
+                        \$scope.mycolor = '#FA787E';
+                      }
+                      return;
+                    }
+                    else if(!\$scope.prisec | !\$scope.confirm){
+                        \$scope.errortext = 'Please select radio button.';
+                        if(!\$scope.prisec){
+                          \$scope.mycolor = '#FA787E';
+                        }
+                        return;
+                      }
+                    else{
+                      alertText = \$scope.addMe1 + ':' + \$scope.prisec + ' & ' + \$scope.confirm;
+                    }
+                    if(\$scope.alerts.indexOf(\$scope.addMe) == -1) {
+                      \$scope.alerts.push({msg:alertText})
+                      var url2 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/obs";
+                      \$scope.json = {
+                              concept: window.constantConfigObj.conceptDiagnosis,
+                              person: patient,
+                              obsDatetime: date2,
+                              value: alertText,
+                              encounter: EncounterFactory.encounterValue
+                      }
+                      \$scope.prisec = 'Primary';
+                      \$scope.confirm = '';
+                      \$http.post(url2, JSON.stringify(\$scope.json)).then(function(response){
+                              if(response.data)
+                                      \$scope.statuscode = "Success";
+                                      angular.forEach(\$scope.alerts, function(v,k){
+                                        var encounter = v.msg;
+                                        if(encounter.match(\$scope.addMe1) !== null){
+                                          v.uuid = response.data.uuid;
+                                        }
+                                      });
+                                      \$scope.addMe1 = '';
+                        }, function(response){
+                                \$scope.statuscode = "Failed to create Obs";
+                      });
+                    }
+                  }
+                  else {
+                    alert("If there are multiple reloads, please contact system admin.");
+                    window.location.reload(true);
+                  }
+                  };
             \$timeout(function () {
                 \$scope.test1 = 0;
                 \$scope.test2 = 0;
@@ -246,7 +305,6 @@ var app = angular.module('diagnoses', ['recentVisit', 'ngAnimate', 'ngSanitize']
                                 return d.valueToSubmit();
                         }).join(", ") + "]";
                 };
-
 
 		\$scope.closeAlert = function(index) {
 			if (\$scope.visitStatus) {
