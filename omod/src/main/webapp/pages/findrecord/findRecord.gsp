@@ -1,6 +1,13 @@
 <%
     ui.decorateWith("appui", "standardEmrPage")
     ui.includeCss("intelehealth", "findrecord/findRecord.css")
+    ui.includeJavascript("intelehealth", "angularJS/angular.min.js")
+    ui.includeJavascript("intelehealth", "angularJS/angular-resource.min.js")
+    ui.includeJavascript("intelehealth", "jquery/jquery.js")
+    ui.includeJavascript("intelehealth", "angularJS/angular-sanitize.js")
+    ui.includeJavascript("intelehealth", "angularJS/angular-animate.js")
+    ui.includeJavascript("intelehealth", "angular-ui-bootstrap/dist/ui-bootstrap-tpls.js")
+    ui.includeJavascript("intelehealth", "angular-ui-carousel/dist/ui-carousel.js")
 %>
 <script type="text/javascript">
     var breadcrumbs = [
@@ -53,4 +60,35 @@
         
 		<a class="button" href="{{= '/' + OPENMRS_CONTEXT_PATH + '/intelehealth/intelehealthPatientDashboard.page?patientId=' + patient.uuid}}">${ ui.message("intelehealth.findPatient.result.view") }</a>
     </li>
+</script>
+
+<div ng-app="patient">
+<div class="info-body" ng-controller="patientController">
+<table>
+<tr ng-repeat="vis in values">
+<td>{{vis.data.patient.person.display}}</td>
+<td>{{vis.data.patient.person.gender}}</td>
+<td>{{vis.data.patient.person.age}}</td>
+<td>{{vis.data.location.display}}</td>
+<td>{{vis.data.encounters[0].encounterType.display}}</td>
+</tr>
+</table>
+</div>
+</div>
+
+<script>
+var patient = angular.module('patient', []);
+patient.controller('patientController', function(\$scope, \$http) {
+\$scope.values = [];
+let url = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/visit/?v=custom:(uuid)"
+\$http.get(url).then(function(response){
+    for(var i = 0; i<response.data.results.length; i++){
+        let url1 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/visit/"+response.data.results[i].uuid+"?v=custom:(patient:(uuid,person:(display,gender,age)),location:(display),encounters:(encounterType))"
+        \$http.get(url1).then(function(response){
+        \$scope.values.push(response)
+})
+}
+})
+})
+
 </script>
