@@ -65,12 +65,21 @@
 <div ng-app="patient">
 <div class="info-body" ng-controller="patientController">
 <table>
+    <th>Patient ID</th>
+    <th>Name</th>
+    <th>Gender</th>
+    <th>Age</th>
+    <th>Location</th>
+    <th>Nurse</th>
+    <th>Doctor</th>
 <tr ng-repeat="vis in values">
-<td>{{vis.data.patient.person.display}}</td>
-<td>{{vis.data.patient.person.gender}}</td>
-<td>{{vis.data.patient.person.age}}</td>
-<td>{{vis.data.location.display}}</td>
-<td>{{vis.data.encounters[0].encounterType.display}}</td>
+    <td>{{vis.patient.identifiers[0].identifier}}</td>
+    <td><a href='/openmrs/intelehealth/intelehealthPatientDashboard.page?patientId={{vis.patient.uuid}}'>{{vis.patient.person.display}}</a></td>
+    <td>{{vis.patient.person.gender}}</td>
+    <td>{{vis.patient.person.age}}</td>
+    <td>{{vis.location.display}}</td>
+    <td>{{vis.nurse}}</td>
+    <td></td>
 </tr>
 </table>
 </div>
@@ -80,15 +89,30 @@
 var patient = angular.module('patient', []);
 patient.controller('patientController', function(\$scope, \$http) {
 \$scope.values = [];
+\$scope.encounters =[];
 let url = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/visit/?v=custom:(uuid)"
 \$http.get(url).then(function(response){
     for(var i = 0; i<response.data.results.length; i++){
-        let url1 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/visit/"+response.data.results[i].uuid+"?v=custom:(patient:(uuid,person:(display,gender,age)),location:(display),encounters:(encounterType))"
+        let url1 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/visit/" +response.data.results[i].uuid+ "?v=custom:(patient:(uuid,identifiers:(identifier),person:(display,gender,age)),location:(display),encounters:(uuid))"
         \$http.get(url1).then(function(response){
-        \$scope.values.push(response)
+        var data = response.data
+        \$scope.encounters = response.data.encounters
+        angular.forEach(\$scope.encounters, (v) => {
+            let url2 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter/" +v.uuid
+            \$http.get(url2).then(function(response){
+                var encounter =  response.data.encounterType.display;
+                if (encounter.match("Vitals") !== null) {
+                     let url3 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter/" +v.uuid+ "?v=custom:(encounterProviders:(provider:(person:(display))))"
+                        \$http.get(url3).then(function(response){
+                        data.nurse = response.data.encounterProviders[0].provider.person.display
+                        })
+                    }
+            })
+        })
+        \$scope.values.push(data)
+        console.log(data)
 })
 }
 })
 })
-
 </script>
