@@ -97,20 +97,19 @@ let url = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/visit/?v=custom:(uuid)"
         \$http.get(url1).then(function(response){
         var data = response.data
         \$scope.encounters = response.data.encounters
-        angular.forEach(\$scope.encounters, (v) => {
-            let url2 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter/" +v.uuid
+        var length = response.data.encounters.length
+        for (var j = 0; j<length; j++){
+            let url2 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter/" + \$scope.encounters[j].uuid
             \$http.get(url2).then(function(response){
                 var encounter =  response.data.encounterType.display;
-                if (encounter.match("Vitals") !== null) {
-                     let url3 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter/" +v.uuid+ "?v=custom:(encounterProviders:(provider:(person:(display))))"
-                        \$http.get(url3).then(function(response){
-                        data.nurse = response.data.encounterProviders[0].provider.person.display
-                        })
-                    }
+                if (encounter.match("ADULTINITIAL") !== null) {
+                    var display = response.data.encounterProviders[0].display
+                    var obs = display.split(':');
+                    data.nurse = obs[0]
+                }
             })
-        })
+        }
         \$scope.values.push(data)
-        console.log(data)
 })
 }
 })
