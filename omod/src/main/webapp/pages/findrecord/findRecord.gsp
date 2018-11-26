@@ -85,12 +85,12 @@ Search <input type='text' ng-model='searchText'>
 </tr>
 </table>
 <div style="text-align:right; width:100%; padding:0;">
-<button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage - 1">Previous</button>
+   <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">Previous</button>
     {{currentPage+1}}/{{numberOfPages()}}
-    <button ng-disabled="currentPage >= values.length/pageSize - 1" ng-click="currentPage=currentPage + 1">
-    Next
+    <button ng-disabled="(currentPage + 1) == numberOfPages()" ng-click="currentPage=currentPage+1">
+        Next
     </button>
-    </div>
+</div>
 </div>
 </div>
 
@@ -98,12 +98,13 @@ Search <input type='text' ng-model='searchText'>
 
 <script>
 var patient = angular.module('patient', []);
-patient.controller('patientController', function(\$scope, \$http) {
+patient.controller('patientController', function(\$scope, \$http, \$filter) {
     \$scope.currentPage = 0;
     \$scope.pageSize = 10;
     \$scope.values = [];
     \$scope.numberOfPages=function(){
-        return Math.ceil(\$scope.values.length/\$scope.pageSize);                
+         var myFilteredData = \$filter('filter')(\$scope.values,\$scope.searchText); 
+        return Math.ceil(myFilteredData.length/\$scope.pageSize);                
     }
 //\$scope.values = [];
 \$scope.encounters =[];
