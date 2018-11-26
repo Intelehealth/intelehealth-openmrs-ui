@@ -61,9 +61,9 @@
 		<a class="button" href="{{= '/' + OPENMRS_CONTEXT_PATH + '/intelehealth/intelehealthPatientDashboard.page?patientId=' + patient.uuid}}">${ ui.message("intelehealth.findPatient.result.view") }</a>
     </li>
 </script>
-
 <div ng-app="patient">
 <div class="info-body" ng-controller="patientController">
+Search <input type='text' ng-model='searchText'>
 <table>
     <th>Patient ID</th>
     <th>Name</th>
@@ -72,23 +72,40 @@
     <th>Location</th>
     <th>Nurse</th>
     <th>Doctor</th>
-<tr ng-repeat="vis in values">
+<tr ng-repeat="vis in values | filter:searchText | startFrom:currentPage*pageSize | limitTo:pageSize">
     <td>{{vis.patient.identifiers[0].identifier}}</td>
     <td><a href='/openmrs/intelehealth/intelehealthPatientDashboard.page?patientId={{vis.patient.uuid}}'>{{vis.patient.person.display}}</a></td>
     <td>{{vis.patient.person.gender}}</td>
     <td>{{vis.patient.person.age}}</td>
     <td>{{vis.location.display}}</td>
-    <td>{{vis.nurse}}</td>
-    <td></td>
+    <td>{{vis.nurse}}<br>
+    <small>{{vis.nurseTime | date: 'dd.MM.yyyy, HH:mm:ss'}}</small></td>
+    <td>{{vis.doctor}}<br>
+    <small>{{vis.doctorTime | date: 'dd.MM.yyyy, HH:mm:ss'}}</small></td>
 </tr>
 </table>
+<div style="text-align:right; width:100%; padding:0;">
+<button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage - 1">Previous</button>
+    {{currentPage+1}}/{{numberOfPages()}}
+    <button ng-disabled="currentPage >= values.length/pageSize - 1" ng-click="currentPage=currentPage + 1">
+    Next
+    </button>
+    </div>
 </div>
 </div>
+
+
 
 <script>
 var patient = angular.module('patient', []);
 patient.controller('patientController', function(\$scope, \$http) {
-\$scope.values = [];
+    \$scope.currentPage = 0;
+    \$scope.pageSize = 10;
+    \$scope.values = [];
+    \$scope.numberOfPages=function(){
+        return Math.ceil(\$scope.values.length/\$scope.pageSize);                
+    }
+//\$scope.values = [];
 \$scope.encounters =[];
 let url = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/visit/?v=custom:(uuid)"
 \$http.get(url).then(function(response){
@@ -103,15 +120,31 @@ let url = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/visit/?v=custom:(uuid)"
             \$http.get(url2).then(function(response){
                 var encounter =  response.data.encounterType.display;
                 if (encounter.match("ADULTINITIAL") !== null) {
+                    data.nurseTime = response.data.encounterDatetime
                     var display = response.data.encounterProviders[0].display
                     var obs = display.split(':');
                     data.nurse = obs[0]
                 }
+                 if (encounter.match("Visit Complete") !== null) {
+                    data.doctorTime = response.data.encounterDatetime
+                    var display = response.data.encounterProviders[0].display
+                    console.log(display);
+                    var obs = display.split(':');
+                    data.doctor = obs[0]
+                }
             })
         }
-        \$scope.values.push(data)
+        \$scope.values.push(data)   
 })
 }
 })
 })
+patient.filter('startFrom', function() {
+    return function(input, start) {
+        start = +start; //parse to int
+        return input.slice(start);
+    }
+});
+
 </script>
+
