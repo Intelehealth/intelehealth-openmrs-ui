@@ -17,6 +17,7 @@
 <div class="info-body" ng-controller="patientController">
 <div>Search <input type='text' ng-model='searchText'><div><br/>
 <table>
+    <th>SN</th>
     <th>Patient ID</th>
     <th>Name</th>
     <th>Gender</th>
@@ -25,6 +26,7 @@
     <th>Nurse</th>
     <th>Doctor</th>
 <tr ng-repeat="vis in values | filter:searchText | startFrom:currentPage*pageSize | limitTo:pageSize">
+    <td>{{((currentPage)*(pageSize))+\$index + 1}}</td>
     <td>{{vis.patient.identifiers[0].identifier}}</td>
     <td><a href='/openmrs/intelehealth/intelehealthPatientDashboard.page?patientId={{vis.patient.uuid}}'>{{vis.patient.person.display}}</a></td>
     <td>{{vis.patient.person.gender}}</td>
@@ -38,11 +40,13 @@
 </table>
 <br/>
 <div style="text-align:right; width:100%; padding:0;">
-   <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">Previous</button>
+<button ng-disabled="currentPage == 0" ng-click="currentPage=numberOfPages()-(numberOfPages())">First</button>
+   <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1"><</button>
     {{currentPage+1}}/{{numberOfPages()}}
     <button ng-disabled="(currentPage + 1) == numberOfPages()" ng-click="currentPage=currentPage+1">
-        Next
+        >
     </button>
+    <button ng-disabled="(currentPage + 1) == numberOfPages()" ng-click="currentPage=numberOfPages()-1">Last</button>
 </div>
 </div>
 </div>
