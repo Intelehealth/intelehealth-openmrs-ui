@@ -1,0 +1,22 @@
+[
+    {
+        "id": "intelehealth.flaggedPatients",
+		"instanceOf": "intelehealth.template.flaggedVisits",
+        "description": "intelehealth.flaggedVisits.app.description",
+        "order": 10,
+        "config": {
+            "afterSelectedUrl": "/myresearchstudy/editContacts.page?patientId={{ patientId }}"
+        },
+        "extensions": [
+            {
+                "id": "${project.parent.groupId}.${project.parent.artifactId}.flaggedVisitsHomepageLink",
+                "extensionPointId": "org.openmrs.referenceapplication.homepageLink",
+                "type": "link",
+                "label": "intelehealth.flaggedVisits.app.label",
+                "url": "intelehealth/flaggedPatients.page?app=intelehealth.flaggedPatients",
+                "icon": "icon-flag",
+                "requiredPrivilege": "App: intelehealth.flaggedVisits"
+            }
+        ]
+    }
+]
