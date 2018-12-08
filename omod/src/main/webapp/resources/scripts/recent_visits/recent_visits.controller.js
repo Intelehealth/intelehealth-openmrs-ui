@@ -27,8 +27,7 @@ recentVisits.filter('vitalsDate', function() {
 	 $scope.vitalsData = [];
 	 $scope.vitalsPresent =true;
 	 $scope.patientId = window.location.search.split('=')[1];
-	 recentVisitFactory.fetchRecentVisits().then(
-			 function(data) {
+	 recentVisitFactory.fetchRecentVisit($scope.patientId).then(function(data) {
 				 $scope.visitList = data.data.results;
 				 $scope.links = [];
 				 angular.forEach($scope.visitList, function(value, key) {
@@ -39,20 +38,27 @@ recentVisits.filter('vitalsDate', function() {
 						 recentVisitFactory.fetchVisitDetails(uuid).then(function(data) {
 							  $scope.visitDetails = data.data;
 							  recentVisitFactory.fetchVisitEncounterObs(data.data.uuid).then(function(data) {
-									$scope.visitDetails = data.data.encounters[1].obs;
-									angular.forEach($scope.visitDetails, (v) => {
-									var display = v.display
-									if (display.match("CURRENT COMPLAINT") !== null) {
-									var obs = display.split('<b>');
-									var b = " "
-									for (var i = 1; i<obs.length; i++) {
-										var obs1 = obs[i].split('<')
-										var b = b + " | " + obs1[0]
-										value.observation = b
+								var enc = data.data.encounters
+								for (var p = 0; p<enc.length ; p++){
+									var disp = enc[p].display
+									if (disp.match("ADULTINITIAL") !== null ){
+										$scope.visitDetails = enc[p].obs;
+										angular.forEach($scope.visitDetails, (v) => {
+										var display = v.display
+											if (display.match("CURRENT COMPLAINT") !== null) {
+												var obs = display.split('<b>');
+												var b = " "
+													for (var i = 1; i<obs.length; i++) {
+														var obs1 = obs[i].split('<')
+														var b = b + " | " + obs1[0]
+														value.observation = b
+													}
+												}
+										})
 									}
 								}
-								})	
-							 })
+						
+						 })
 							 if ($scope.visitDetails.stopDatetime == null || $scope.visitDetails.stopDatetime == undefined) {
 								 value.visitStatus = "Active";
 							 }
