@@ -75,6 +75,7 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient]) }
                     ${ui.includeFragment("intelehealth", "overview/orderedTests", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/advice", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/followUp", [patient: patient])}
+                    ${ui.includeFragment("intelehealth", "overview/submit", [patient: patient])}
 
        </div>
         </div>
@@ -95,7 +96,7 @@ var isVisitNotePresent = false;
 var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterModule', 'ngSanitize',
   'recentVisit', 'vitalsSummary', 'famhistSummary', 'historySummary', 'complaintSummary', 'examSummary', 'diagnoses',
   'medsSummary', 'orderedTestsSummary', 'adviceSummary', 'intelehealthPatientProfileImage', 'intelehealthPhysicalExamination',
-  'intelehealthAdditionalDocs', 'ui.bootstrap', 'additionalComments', 'FollowUp', 'ui.carousel']);
+  'intelehealthAdditionalDocs', 'ui.bootstrap', 'additionalComments', 'FollowUp', 'ui.carousel', 'Submit']);
 
 app.controller('PatientSummaryController', function(\$scope, \$http, recentVisitFactory, EncounterFactory, \$timeout) {
   var patient = "${ patient.uuid }";

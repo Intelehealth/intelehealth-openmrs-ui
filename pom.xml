@@ -3,7 +3,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>intelehealth</artifactId>
-	<version>1.1.4</version>
+	<version>1.2</version>
 	<packaging>pom</packaging>
 	<name>Intelehealth Module</name>
 	<description>Intelehealth Module for Telemedicine</description>
@@ -11,7 +11,7 @@
 
 	<developers>
 		<developer>
-			<name>Hardik Nagda</name>
+			<name>Kundan Sinha</name>
 		</developer>
 	</developers>
 
