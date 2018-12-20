@@ -59,6 +59,7 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient]) }
     <div class="clear"></div>
         <div class="dashboard clear" ng-app="patientSummary" ng-controller="PatientSummaryController">
             <div class="long-info-container column">
+                    ${ui.includeFragment("intelehealth", "overview/patientInfo", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/vitals", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/famhist", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/history", [patient: patient])}
@@ -73,25 +74,21 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient]) }
                     ${ui.includeFragment("intelehealth", "overview/advice", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/followUp", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/submit", [patient: patient])}
-
        </div>
         </div>
         <a id="back2Top" title="Back to top" href="#">&#10148;</a>
 
 
 <script>
-
 var visitNoteEncounterUuid = "";
 var path = window.location.search;
 var i = path.indexOf("visitId=");
 var visitId = path.substr(i + 8, path.length);
 var isVisitNotePresent = false;
-
-var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterModule', 'ngSanitize', 
+var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterModule', 'ngSanitize', 'patientInfo',
   'recentVisit', 'vitalsSummary', 'famhistSummary', 'historySummary', 'complaintSummary', 'examSummary', 'diagnoses',
   'medsSummary', 'orderedTestsSummary', 'adviceSummary', 'intelehealthPatientProfileImage', 'intelehealthPhysicalExamination',
   'intelehealthAdditionalDocs', 'ui.bootstrap', 'additionalComments', 'FollowUp', 'ui.carousel', 'Submit']);
-
 app.controller('PatientSummaryController', function(\$scope, \$http, recentVisitFactory, EncounterFactory, \$timeout) {
   var patient = "${ patient.uuid }";
   var date2 = new Date();
@@ -164,7 +161,6 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
   						console.log(error);
   					});
 });
-
 </script>
 
 <script type="text/javascript">
@@ -195,7 +191,6 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
             \$("html, body").animate({ scrollTop: 0 }, "slow");
             return false;
         });
-
     });
 </script>
 
