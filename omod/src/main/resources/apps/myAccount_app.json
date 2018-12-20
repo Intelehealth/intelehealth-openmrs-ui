@@ -1,0 +1,19 @@
+[
+    {
+        "id": "intelehealth.myAccount",
+		"instanceOf": "intelehealth.template.myAccount",
+        "description": "intelehealth.myAccount.app.description",
+        "order": 12,
+        "extensions": [
+            {
+                "id": "${project.parent.groupId}.${project.parent.artifactId}.myAccountHomepageLink",
+                "extensionPointId": "org.openmrs.referenceapplication.homepageLink",
+                "type": "link",
+                "label": "intelehealth.myAccount.app.label",
+                "url": "intelehealth/myAccount.page?app=intelehealth.myAccount",
+                "icon": "icon-cog",
+                "requiredPrivilege": "App: intelehealth.myAccount"
+            }
+        ]
+    }
+]
