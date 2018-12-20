@@ -36,7 +36,7 @@
         %>
         
 			<tr id="visit-${v.visit.id}">
-				<td data-id='${v.visit.patient.patientIdentifier}' data='${v.visit.uuid}'>${(v.visit.patient.patientIdentifier)}</td>
+				<td data-id='${v.visit.patient.patientIdentifier}'>${(v.visit.patient.patientIdentifier)}</td>
 				<td id='flag'></td>
                 <td>
 
@@ -84,11 +84,12 @@ ${ ui.includeFragment("uicommons", "widget/dataTable", [ object: "#active-visits
 <script type="text/javascript">
 \$('#active-visits tbody tr td:first-child').each ( function () {
   let url = "/" + OPENMRS_CONTEXT_PATH +
-  "/ws/rest/v1/patient?v=custom%3A(uuid%2Cidentifiers%3A(identifierType%3A(name)%2Cidentifier)%2Cperson)&q="+\$(this).attr('data-id')
+  "/ws/rest/v1/patient?v=custom:(uuid,identifiers:(identifierType:(name),location:(display),identifier),person:(gender,age))&q="+\$(this).attr('data-id')
   let that = this
   \$.get(url, function (data) {
     \$(that).closest('td').siblings('#gender').html(data.results[0].person.gender)
     \$(that).closest('td').siblings('#age').html(data.results[0].person.age)
+    \$(that).closest('td').siblings('#location').html(data.results[0].identifiers[0].location.display)
         let url2 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter?patient=" + data.results[0].uuid
         \$.get(url2, function (data1) {
             	if(data1.results.length !== 0) {
@@ -101,17 +102,6 @@ ${ ui.includeFragment("uicommons", "widget/dataTable", [ object: "#active-visits
   						}
         })
    
-  })
-})
-</script>
-
-<script>
-\$('#active-visits tbody tr td:first-child').each ( function () {
-  let url = "/" + OPENMRS_CONTEXT_PATH +
-  "/ws/rest/v1/visit/"+\$(this).attr('data')
-  let that = this
-  \$.get(url, function (data) {
-    \$(that).closest('td').siblings('#location').html(data.location.display)
   })
 })
 </script>
