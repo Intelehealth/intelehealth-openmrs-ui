@@ -1,8 +1,12 @@
+<%
+    ui.includeCss("intelehealth", "overview/pacifico.css")
+%>
 <div id="sign" ng-controller = "SubmitController">
 <br>
 	<div class="info-body" ng-cloak>
     <br/>  
         <div align="center">
+        <h4 style="font-size:25px; font-family:{{font}};">{{text}}</h4>
         <button class='confirm' ng-click="submit()">Complete Visit</button>
         </div>
       <div align ="center">
@@ -30,76 +34,97 @@ app.controller('SubmitController', function(\$scope, \$http, recentVisitFactory,
          \$scope.isLoading = true;
          \$scope.visitEncounters = [];
          \$scope.visitObs = [];
-         //Function to get encounter UUID and can be used when required
-         // var encounterValue = () => {
-         //   var promise = EncounterFactory.getEncounter().then(function(d){
-         //     var length = d.length;
-         //   if(length > 0) {
-         //     angular.forEach(d, function(value, key){
-         //       let data = value.uuid;
-         //       EncounterFactory.encounterValue = data;
-         //     });
-         //   }
-         //   });
-         // };;
          \$scope.visitNoteData = [];
          \$scope.visitStatus = false;
          recentVisitFactory.fetchVisitDetails(visitId).then(function(data) {
-                                 \$scope.visitDetails = data.data;
-                                 \$scope.visitEncounters = data.data.encounters;
-                                 if(\$scope.visitEncounters.length !== 0) {
-                                     angular.forEach(\$scope.visitEncounters, function(value, key){
-                                         var encounter = value.display;
-                                         if(encounter.match("Visit Complete") !== null) {
+          \$scope.visitDetails = data.data;
+          \$scope.visitEncounters = data.data.encounters;
+          if(\$scope.visitEncounters.length !== 0) {
+          angular.forEach(\$scope.visitEncounters, function(value, key){
+            var encounter = value.display;
+            if(encounter.match("Visit Complete") !== null) {
        //This stores the value of encounter we got from response into the encounterValue object in Scripts-> EncounterService
-                           EncounterFactory.encounterValue = value.uuid;
-                                             isSeenPresent = true;
-                                             \$scope.statuscode1 = "Visit Already Completed";
-                                         }
-                                     });
-                                 }
-                                 if (isSeenPresent == false || \$scope.visitEncounters.length == 0) {
-                       var promiseuuid = EncounterFactory.postEncounter().then(function(response){
-                         return response;
-                       });
-                       promiseuuid.then(function(x){
-                             \$scope.uuid = x;
-                             \$scope.uuid3;
-                             //GETing encounter provider value
-                             var url2 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/provider?user=" + \$scope.uuid;
-                             \$http.get(url2).then(function(response){
-                               angular.forEach(response.data.results, function(v, k){
-                                                       var uuid = v.uuid;
-                                 var url1 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter";
-                                 var json = {
-                                             patient: patient,
-                                             encounterType: window.constantConfigObj.encounterTypeVisitComplete,
-                                             encounterProviders:[{
-                                               provider: uuid,
-                                               encounterRole: window.constantConfigObj.encounterRoleDoctor
-                                             }],
-                                             visit: visitId,
-                                             encounterDatetime: date2
-                                           };
+            EncounterFactory.encounterValue = value.uuid;
+            isSeenPresent = true;
+            alert("Visit Already Completed");
+            }
+          });
+          }
+          if (isSeenPresent == false || \$scope.visitEncounters.length == 0) {
+            var promiseuuid = EncounterFactory.postEncounter().then(function(response){
+              return response;
+            });
+            promiseuuid.then(function(x){
+              \$scope.uuid = x;
+              \$scope.uuid3;
+              //GETing encounter provider value
+              var url2 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/provider?user=" + \$scope.uuid;
+              \$http.get(url2).then(function(response){
+                angular.forEach(response.data.results, function(v, k){
+                  var uuid = v.uuid;
+                  \$scope.providerUUID = uuid
+                  var url1 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter";
+                  var json = {
+                          patient: patient,
+                          encounterType: window.constantConfigObj.encounterTypeVisitComplete,
+                          encounterProviders:[{
+                          provider: uuid,
+                          encounterRole: window.constantConfigObj.encounterRoleDoctor
+                            }],
+                          visit: visitId,
+                          encounterDatetime: date2
+                        };
                                            
-                                          
-        \$http.post(url1, JSON.stringify(json)).then(function(response){
-            \$scope.statuscode1 = "Visit Complete";
+\$http.post(url1, JSON.stringify(json)).then(function(response){
+      \$scope.statuscode1 = "Visit Complete";
        // On success response store the response uuid into the encounter object
        //This stores the value of encounter we got from response into the encounterValue object in Scripts-> EncounterService
-            EncounterFactory.encounterValue = response.data.uuid;
+      EncounterFactory.encounterValue = response.data.uuid;
         }, function(response){
-              \$scope.statuscode1 = "Failed to create Encounter";
-              });
-              });
-              },function(response){
-                console.log("Get user uuid Failed!");
-            });
+          \$scope.statuscode1 = "Failed to create Encounter";
+          });
+
+          
+        });
+    },function(response){
+        console.log("Get user uuid Failed!");
+      });
           });
         }
       }, function(error) {
     console.log(error);
-    });                      
+    }); 
+
+    var promiseuuid = EncounterFactory.postEncounter().then(function(response){
+    return response;
+    });
+    promiseuuid.then(function(x){
+    \$scope.uuid = x;
+    //GETing encounter provider value
+    var user = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/provider?user=" + \$scope.uuid;
+    \$http.get(user).then(function(response){
+    angular.forEach(response.data.results, function(v, k){
+      var providerUUID = v.uuid;
+      var signRequest = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/provider/" + providerUUID + "/attribute";
+            \$http.get(signRequest).then(function(response){
+                if(response.data.results.length != 0){
+                  angular.forEach(response.data.results, (res) => {
+                    var display = res.display;
+                    if(display.match("Font of sign") !== null){
+                      \$scope.font = res.value
+                    }
+                    if(display.match("Text of sign") !== null){
+                      \$scope.text = res.value
+                    }
+                  })
+                }else{
+                  alert("Go to My Account and set your signature");
+                }
+            })
+    })
+    })
+    })
+
   }
 })
 </script>

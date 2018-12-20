@@ -26,15 +26,15 @@
 <h3> Please choose your signature style: </h3>
 <br>
     <div>
-    <input type="radio" name="font" id="1" value="1"><span style="font-family:Pacifico;"> {{myText}}</span>
+    <input type="radio" name="font" id="1" value="1"><span style="font-size:25px; font-family:Pacifico"> {{myText}}</span>
     </div>
     <br>
     <div>
-    <input type="radio" name="font" id="2" value="2"><span style="font-family:verdana;"> {{myText}}</span>
+    <input type="radio" name="font" id="2" value="2"><span style="font-size:25px; font-family:verdana"> {{myText}}</span>
     </div> 
     <br>
     <div>
-    <input type="radio" name="font" id="3" value="3"><span style="font-family:arial;"> {{myText}}</span>
+    <input type="radio" name="font" id="3" value="3"><span style="font-size:25px; font-family:arial"> {{myText}}</span>
     </div>
     <br>
     <div>
