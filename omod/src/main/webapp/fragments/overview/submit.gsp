@@ -7,7 +7,7 @@
     <br/>  
         <div align="center">
         <h4 style="font-size:25px; font-family:{{font}};">{{text}}</h4>
-        <button class='confirm' ng-click="submit()">Complete Visit</button>
+        <button class='confirm' ng-click="submit()">Sign and Submit</button>
         </div>
       <div align ="center">
       <br>
@@ -118,7 +118,10 @@ app.controller('SubmitController', function(\$scope, \$http, recentVisitFactory,
                     }
                   })
                 }else{
-                  alert("Go to My Account and set your signature");
+                  if (window.confirm('Your signature is not setup! If you click "Ok" you would be redirected . Cancel will load this website ')) 
+                    {
+                    window.location.href='/openmrs/intelehealth/myAccount.page?app=intelehealth.myAccount';
+                    };
                 }
             })
     })
