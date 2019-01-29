@@ -15,6 +15,7 @@
     ui.includeJavascript("intelehealth", "constants.js")
     ui.includeJavascript("intelehealth", "recent_visits/recent_visits.module.js")
     ui.includeJavascript("intelehealth", "recent_visits/recent_visits.service.js")
+    ui.includeJavascript("intelehealth", "recent_visits/recent_visits.controller.js")
     ui.includeJavascript("intelehealth", "intelehealth_patient_profile_image/intelehealth_patient_profile_image.module.js")
     ui.includeJavascript("intelehealth", "intelehealth_patient_profile_image/intelehealth_patient_profile_image.service.js")
     ui.includeJavascript("intelehealth", "intelehealth_patient_profile_image/intelehealth_patient_profile_image.controller.js")
@@ -40,6 +41,7 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient]) }
         <i class="icon-diagnosis"><a href="#diagnosis">Diagnoses</a></i>
       <br>
       <div id = "jumper">
+        <i class="icon-book"><a href="#interpretation">Interpretation</a></i>
         <i class="icon-comments"><a href="#comments">Doctor's Note</a></i>
         <i class="icon-medicine"><a href="#meds">Prescribed Medication</a></i>
         <i class="icon-beaker"><a href="#orderedTests">Prescribed Tests</a></i>
@@ -64,8 +66,8 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient]) }
                     ${ui.includeFragment("intelehealth", "overview/history", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/complaint", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/exam", [patient: patient])}
-                    ${ui.includeFragment("intelehealth", "overview/physicalExamImages", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/additionalDocsImages", [patient: patient])}
+                    ${ui.includeFragment("intelehealth", "overview/interpretation", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/encounterDiagnoses", [patient: patient, formFieldName: 'Consultation'])}
                     ${ui.includeFragment("intelehealth", "overview/additionalComments", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/meds", [patient: patient])}
@@ -73,43 +75,27 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient]) }
                     ${ui.includeFragment("intelehealth", "overview/advice", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/followUp", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/submit", [patient: patient])}
-
        </div>
         </div>
         <a id="back2Top" title="Back to top" href="#">&#10148;</a>
 
 
 <script>
-
 var visitNoteEncounterUuid = "";
 var path = window.location.search;
 var i = path.indexOf("visitId=");
 var visitId = path.substr(i + 8, path.length);
 var isVisitNotePresent = false;
-
-var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterModule', 'ngSanitize', 
-  'recentVisit', 'vitalsSummary', 'famhistSummary', 'historySummary', 'complaintSummary', 'examSummary', 'diagnoses',
-  'medsSummary', 'orderedTestsSummary', 'adviceSummary', 'intelehealthPatientProfileImage', 'intelehealthPhysicalExamination',
+var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterModule', 'ngSanitize',
+  'recentVisit', 'interpretation', 'vitalsSummary', 'famhistSummary', 'historySummary', 'complaintSummary', 'examSummary', 'diagnoses',
+  'medsSummary', 'orderedTestsSummary', 'adviceSummary', 'intelehealthPatientProfileImage',
   'intelehealthAdditionalDocs', 'ui.bootstrap', 'additionalComments', 'FollowUp', 'ui.carousel', 'Submit']);
-
 app.controller('PatientSummaryController', function(\$scope, \$http, recentVisitFactory, EncounterFactory, \$timeout) {
   var patient = "${ patient.uuid }";
   var date2 = new Date();
   \$scope.isLoading = true;
   \$scope.visitEncounters = [];
   \$scope.visitObs = [];
-  //Function to get encounter UUID
-  var encounterValue = () => {
-    var promise = EncounterFactory.getEncounter().then(function(d){
-      var length = d.length;
-    if(length > 0) {
-      angular.forEach(d, function(value, key){
-        let data = value.uuid;
-        EncounterFactory.encounterValue = data;
-      });
-    }
-    });
-  };
   \$scope.visitNoteData = [];
   \$scope.visitStatus = false;
   recentVisitFactory.fetchVisitDetails(visitId).then(function(data) {
@@ -118,9 +104,15 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
   						if(\$scope.visitEncounters.length !== 0) {
   							angular.forEach(\$scope.visitEncounters, function(value, key){
   								var encounter = value.display;
+                  console.log(encounter);
   								if(encounter.match("Visit Note") !== null) {
                     // To get encounter value for fragments if encounter already exists!
                     EncounterFactory.encounterValue = value.uuid;
+  									isVisitNotePresent = true;
+  								}
+                  if(encounter.match("RHPT-Interpretation") !== null) {
+                    // To get encounter value for fragments if encounter already exists!
+                    EncounterFactory.rhpt_encounter = value.uuid;
   									isVisitNotePresent = true;
   								}
   							});
@@ -136,6 +128,7 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
                       \$http.get(url2).then(function(response){
                         angular.forEach(response.data.results, function(v, k){
     											var uuid = v.uuid;
+                          var rhpt_encounter = 'aa5f275f-ab3d-4efe-9bbb-7103b7a2c96d';
                           var url1 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/encounter";
                           var json = {
                                       patient: patient,
@@ -154,6 +147,24 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
                           }, function(response){
                             \$scope.statuscode = "Failed to create Encounter";
                           });
+                          //RHPT interpretation encounter
+                          var rhpt_json = {
+                                      patient: patient,
+                                      encounterType: rhpt_encounter,
+                                      encounterProviders:[{
+                                        provider: uuid,
+                                        encounterRole: window.constantConfigObj.encounterRoleDoctor
+                                      }],
+                                      visit: visitId,
+                                      encounterDatetime: date2
+                                    };
+                          \$http.post(url1, JSON.stringify(rhpt_json)).then(function(response){
+                              	\$scope.statuscode = "Success";
+                                // Set encounter value after creating new encounter
+                                EncounterFactory.rhpt_encounter = response.data.uuid;
+                          }, function(response){
+                            \$scope.statuscode = "Failed to create Encounter";
+                          });
     										});
                       },function(response){
                         console.log("Get user uuid Failed!");
@@ -164,7 +175,6 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
   						console.log(error);
   					});
 });
-
 </script>
 
 <script type="text/javascript">
@@ -195,7 +205,6 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
             \$("html, body").animate({ scrollTop: 0 }, "slow");
             return false;
         });
-
     });
 </script>
 
