@@ -3,7 +3,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>intelehealth</artifactId>
-	<version>1.2</version>
+	<version>1.3</version>
 	<packaging>pom</packaging>
 	<name>Intelehealth Module</name>
 	<description>Intelehealth Module for Telemedicine</description>
