@@ -2,7 +2,9 @@
     ui.decorateWith("appui", "standardEmrPage")
     ui.includeCss("intelehealth", "flaticon/font/flaticon.css")
     ui.includeJavascript("intelehealth", "constants.js")
-    ui.includeCss("intelehealth", "overview/pacifico.css")
+    ui.includeCss("intelehealth", "overview/youthness.css")
+    ui.includeCss("intelehealth", "overview/arty.css")
+    ui.includeCss("intelehealth", "overview/asem.css")
     ui.includeJavascript("intelehealth", "angularJS/angular.min.js")
     ui.includeJavascript("intelehealth", "angularJS/angular-sanitize.min.js")
     ui.includeJavascript("intelehealth", "angularJS/angular-animate.min.js")
@@ -26,15 +28,15 @@
 <h3> Please choose your signature style: </h3>
 <br>
     <div>
-    <input type="radio" name="font" id="1" value="1"><span style="font-size:25px; font-family:Pacifico"> {{myText}}</span>
+    <input type="radio" name="font" id="1" value="1"><span style="font-size:55px; font-family:Youthness"> {{myText}}</span>
     </div>
     <br>
     <div>
-    <input type="radio" name="font" id="2" value="2"><span style="font-size:25px; font-family:verdana"> {{myText}}</span>
+    <input type="radio" name="font" id="2" value="2"><span style="font-size:55px; font-family:Asem"> {{myText}}</span>
     </div> 
     <br>
     <div>
-    <input type="radio" name="font" id="3" value="3"><span style="font-size:25px; font-family:arial"> {{myText}}</span>
+    <input type="radio" name="font" id="3" value="3"><span style="font-size:100px; font-family:Arty"> {{myText}}</span>
     </div>
     <br>
     <div>
