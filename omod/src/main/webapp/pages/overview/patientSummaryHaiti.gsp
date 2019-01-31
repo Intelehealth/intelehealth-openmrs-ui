@@ -68,6 +68,7 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient]) }
                     ${ui.includeFragment("intelehealth", "overview/exam", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/physicalExamImages", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/additionalDocsImages", [patient: patient])}
+                    ${ui.includeFragment("intelehealth", "overview/patientInteraction", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/encounterDiagnoses", [patient: patient, formFieldName: 'Consultation'])}
                     ${ui.includeFragment("intelehealth", "overview/additionalComments", [patient: patient])}
                     ${ui.includeFragment("intelehealth", "overview/meds", [patient: patient])}
@@ -89,7 +90,8 @@ var isVisitNotePresent = false;
 var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterModule', 'ngSanitize', 'patientInfo',
   'recentVisit', 'vitalsSummary', 'famhistSummary', 'historySummary', 'complaintSummary', 'examSummary', 'diagnoses',
   'medsSummary', 'orderedTestsSummary', 'adviceSummary', 'intelehealthPatientProfileImage', 'intelehealthPhysicalExamination',
-  'intelehealthAdditionalDocs', 'ui.bootstrap', 'additionalComments', 'FollowUp', 'ui.carousel', 'Submit']);
+  'intelehealthAdditionalDocs', 'ui.bootstrap', 'additionalComments', 'FollowUp', 'ui.carousel', 'Submit', 'Interaction']);
+
 app.controller('PatientSummaryController', function(\$scope, \$http, recentVisitFactory, EncounterFactory, \$timeout) {
   var patient = "${ patient.uuid }";
   var date2 = new Date();

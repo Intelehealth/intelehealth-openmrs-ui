@@ -17,5 +17,6 @@ var constantConfigObj = {
 		conceptAdditionalComments: '162169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
 		conceptFollowUp: 'e8caffd6-5d22-41c4-8d6a-bc31a44d0c86',
 		textOfSign: 'c1c6458d-383b-4034-afa0-16a34185b458',
-		fontOfSign: '8d321915-e59d-4e19-98a9-086946bfc72b'
+		fontOfSign: '8d321915-e59d-4e19-98a9-086946bfc72b',
+		patientInteraction: '6cc0bdfe-ccde-46b4-b5ff-e3ae238272cc'
 }

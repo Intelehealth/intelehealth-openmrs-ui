@@ -55,13 +55,13 @@ app.controller('AccountController', function(\$scope, \$http, EncounterFactory) 
     \$scope.signature = function() {
         var value = false;
        if (document.getElementById('1').checked) {
-            insert(\$scope.myText, "Pacifico")
+            insert(\$scope.myText, "Youthness")
         }
         else if(document.getElementById('2').checked){
-            insert(\$scope.myText, "Hello")
+            insert(\$scope.myText, "Asem")
         }
         else if(document.getElementById('3').checked){
-            insert(\$scope.myText, "hi")
+            insert(\$scope.myText, "Arty")
         }
     }
 
