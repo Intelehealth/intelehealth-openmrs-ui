@@ -39,6 +39,10 @@
 														HR: {{item.pulse}}
 														<br>
 													</div>
+													<div>
+														RR: {{item.RR}}
+														<br>
+													</div>
 				</div>
 	</div>
 </div>

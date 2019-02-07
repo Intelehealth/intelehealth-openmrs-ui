@@ -21,12 +21,9 @@
                         <td ng-if = "item.weight.includes('-') || item.height.includes('-')" style="border:none">
                             BMI: {{item.bmi}}
                         </td>
-												<td ng-if = "!item.weight.includes('-') && !item.height.includes('-')" style="border:none">
+			<td ng-if = "!item.weight.includes('-') && !item.height.includes('-')" style="border:none">
                             BMI: {{item.weight/((item.height/100)*(item.height/100)) | round}}
                         </td>
-												<td ng-if = "!item.weight.includes('-') && !item.height.includes('-')" style="border:none">
-															BMI: {{item.weight/((item.height/100)*(item.height/100)) | round}}
-													</td>
                         <td style="border:none">
                             Sp02: {{item.o2sat}}%
                         </td>
