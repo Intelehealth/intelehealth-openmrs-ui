@@ -57,6 +57,9 @@ ${ ui.includeFragment("coreapps", "patientHeader", [ patient: patient]) }
 
 <br>
   <br>
+
+    <% /* Include the fragments here! */ %>
+
     <div class="clear"></div>
         <div class="dashboard clear" ng-app="patientSummary" ng-controller="PatientSummaryController">
             <div class="long-info-container column">
@@ -89,7 +92,9 @@ var i = path.indexOf("visitId=");
 var visitId = path.substr(i + 8, path.length);
 var isVisitNotePresent = false;
 
-var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterModule', 'ngSanitize', 
+
+
+var app = angular.module('patientSummary', ['ngAnimate', 'ngResource', 'EncounterModule', 'ngSanitize',
   'recentVisit', 'vitalsSummary', 'famhistSummary', 'historySummary', 'complaintSummary', 'examSummary', 'diagnoses',
   'medsSummary', 'orderedTestsSummary', 'adviceSummary', 'intelehealthPatientProfileImage', 'intelehealthPhysicalExamination',
   'intelehealthAdditionalDocs', 'ui.bootstrap', 'additionalComments', 'FollowUp', 'ui.carousel', 'Submit', 'Interaction']);
@@ -100,18 +105,18 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
   \$scope.isLoading = true;
   \$scope.visitEncounters = [];
   \$scope.visitObs = [];
-  //Function to get encounter UUID
-  var encounterValue = () => {
-    var promise = EncounterFactory.getEncounter().then(function(d){
-      var length = d.length;
-    if(length > 0) {
-      angular.forEach(d, function(value, key){
-        let data = value.uuid;
-        EncounterFactory.encounterValue = data;
-      });
-    }
-    });
-  };
+  //Function to get encounter UUID and can be used when required
+  // var encounterValue = () => {
+  //   var promise = EncounterFactory.getEncounter().then(function(d){
+  //     var length = d.length;
+  //   if(length > 0) {
+  //     angular.forEach(d, function(value, key){
+  //       let data = value.uuid;
+  //       EncounterFactory.encounterValue = data;
+  //     });
+  //   }
+  //   });
+  // };
   \$scope.visitNoteData = [];
   \$scope.visitStatus = false;
   recentVisitFactory.fetchVisitDetails(visitId).then(function(data) {
@@ -121,7 +126,7 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
   							angular.forEach(\$scope.visitEncounters, function(value, key){
   								var encounter = value.display;
   								if(encounter.match("Visit Note") !== null) {
-                    // To get encounter value for fragments if encounter already exists!
+//This stores the value of encounter we got from response into the encounterValue object in Scripts-> EncounterService
                     EncounterFactory.encounterValue = value.uuid;
   									isVisitNotePresent = true;
   								}
@@ -134,6 +139,7 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
                 promiseuuid.then(function(x){
                       \$scope.uuid = x;
                       \$scope.uuid3;
+                      //GETing encounter provider value
                       var url2 = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/provider?user=" + \$scope.uuid;
                       \$http.get(url2).then(function(response){
                         angular.forEach(response.data.results, function(v, k){
@@ -151,7 +157,8 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
                                     };
                           \$http.post(url1, JSON.stringify(json)).then(function(response){
                               	\$scope.statuscode = "Success";
-                                // Set encounter value after creating new encounter
+// On success response store the response uuid into the encounter object
+//This stores the value of encounter we got from response into the encounterValue object in Scripts-> EncounterService
                                 EncounterFactory.encounterValue = response.data.uuid;
                           }, function(response){
                             \$scope.statuscode = "Failed to create Encounter";
@@ -183,6 +190,8 @@ app.controller('PatientSummaryController', function(\$scope, \$http, recentVisit
         });
     });
     var patient = { id: ${ patient.id } };
+
+    //Back to top arrow 
     \$(window).scroll(function() {
         var scroller = \$(window).scrollTop();
         if (scroller > 100) {

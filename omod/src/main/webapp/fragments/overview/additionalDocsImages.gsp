@@ -8,6 +8,7 @@
   <ui-carousel slides="patientImage" slides-to-show="3" slides-to-scroll="3" dots="true">
   <carousel-item>
   <div>
+      <% /* All image fragments -> change url in respective files in scripts folder */ %>
     <img ng-click="\$parent.\$parent.openAdditionalDocFullImage(item.Image.url)" src="{{ item.Image.url }}" alt="{{ item.Image.name }}" width="200px" height="200px" />
     </div>
   </carousel-item>

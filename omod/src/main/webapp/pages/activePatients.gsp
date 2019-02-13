@@ -22,7 +22,6 @@
             <th>Age</th>
             <th>${ui.message("intelehealth.location")}</th>
 			<th>${ui.message("intelehealth.activeVisits.lastSeen")}</th>
-      
 		</tr>
 	</thead>
 	<tbody>
@@ -50,8 +49,6 @@
                         <td id='gender'></td>
                         <td id='age'></td>
                         <td id='location'></td>
-                
-
 				<td>
                     <% if (latest) { %>
                         ${ui.format(latest.encounterType)}
@@ -101,7 +98,6 @@ ${ ui.includeFragment("uicommons", "widget/dataTable", [ object: "#active-visits
   							}
   						}
         })
-   
   })
 })
 </script>
