@@ -86,7 +86,7 @@ recentVisits.filter('vitalsDate', function() {
 								 $http.get(encounterUrl).then(function(response){
 									 let obs = [];
 									 var answers = {date:response.data.display, temperature:'-', height:'-', weight:'-', bmi:'-',
-									 o2sat:'-', systolicBP:'-', diastolicBP: '-', pulse: '-'};
+									 o2sat:'-', systolicBP:'-', diastolicBP: '-', pulse: '-', RR: '-'};
 									 obs.push(response.data.obs);
 									 angular.forEach(response.data.obs, function(value,key){
 											 if(value.display.includes('TEMP')){
@@ -110,8 +110,11 @@ recentVisits.filter('vitalsDate', function() {
 						 if(value.display.includes('Pulse')){
 								 answers.pulse = Number(value.display.slice(7,value.display.length));
 						 }
+						 if(value.display.includes('Respiratory rate')){
+								answers.RR = Number(value.display.slice(17,value.display.length));
+						}
 									 })
- 
+									 console.log(answers)
 									 $scope.vitalsData.push(answers);
 								 }, function(error){
 									 console.log("Error");

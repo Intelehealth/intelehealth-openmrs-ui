@@ -1,4 +1,4 @@
-<div id="vitals" class="long-info-section" ng-controller="vitalsSummaryController">
+<div id="vitals" class="long-info-section" ng-controller="vitalsVsoSummaryController">
 	<div class="info-header">
 		<i class="icon-vitals"></i>
 		<h3>Vitals</h3>
@@ -9,7 +9,7 @@
                 <tr ng-if="vitalsPresent" ng-repeat="item in vitalsData | orderBy:'-date'">
                         <td width="100px" style="border: none">{{item.date | vitalsDate | date: 'dd.MMM.yyyy'}}</td>
                         <td style="border:none">
-	                    <span ng-if="!item.temperature.includes('-')">Temp: {{(item.temperature * 9/5) + 32 | round}} F</span>
+	                    <span ng-if="!item.temperature.includes('-')">Temp: {{item.temperature | number:1}} C</span>
 	                    <span ng-if="item.temperature.includes('-')">Temp: {{item.temperature}} </span>
                         </td>
                         <td style="border:none">
@@ -22,16 +22,19 @@
                             BMI: {{item.bmi}}
                         </td>
 			<td ng-if = "!item.weight.includes('-') && !item.height.includes('-')" style="border:none">
-                            BMI: {{item.weight/((item.height/100)*(item.height/100)) | round}}
-                        </td>
+			    BMI: {{item.weight/((item.height/100)*(item.height/100)) | round}}
+			</td>
                         <td style="border:none">
                             Sp02: {{item.o2sat}}%
                         </td>
                         <td style="border:none">
-                            BP: {{item.systolicBP}} / {{item.diastolicBP}}
+                            BP: {{item.systolicBP}}/{{item.diastolicBP}}
                         </td>
                         <td style="border:none">
                             HR: {{item.pulse}}
+                        </td>
+			<td style="border:none">
+                            RR: {{item.RR}}
                         </td>
 		 </tr>
         </table>
@@ -39,7 +42,7 @@
 </div>
 
 <script>
-var app = angular.module('vitalsSummary', ['recentVisit']);
+var app = angular.module('vitalsVsoSummary', ['recentVisit']);
 
 app.filter('vitalsDate', function() {
    return function(text) {
@@ -59,7 +62,7 @@ app.filter('round', function(){
 	};
 });
 
-app.controller('vitalsSummaryController', function(\$scope, \$http, \$location, recentVisitFactory) {
+app.controller('vitalsVsoSummaryController', function(\$scope, \$http, \$location, recentVisitFactory) {
 var path = window.location.search;
 var i = path.indexOf("visitId=");
 var visitId = path.substr(i + 8, path.length);
@@ -101,7 +104,10 @@ recentVisitFactory.fetchVisitDetails(visitId).then(function(data) {
 				                                        }
 				                                        if(value.display.includes('Pulse')){
 				                                                answers.pulse = Number(value.display.slice(7,value.display.length));
-				                                        }
+									}
+									if(value.display.includes('Respiratory rate')){
+										answers.RR = Number(value.display.slice(17,value.display.length));
+									}
 								   })
 							      \$scope.vitalsData.push(answers);
 										}, function(response) {
