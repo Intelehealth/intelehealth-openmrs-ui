@@ -21,20 +21,20 @@
                         <td ng-if = "item.weight.includes('-') || item.height.includes('-')" style="border:none">
                             BMI: {{item.bmi}}
                         </td>
-												<td ng-if = "!item.weight.includes('-') && !item.height.includes('-')" style="border:none">
-                            BMI: {{item.weight/((item.height/100)*(item.height/100)) | round}}
-                        </td>
-												<td ng-if = "!item.weight.includes('-') && !item.height.includes('-')" style="border:none">
-															BMI: {{item.weight/((item.height/100)*(item.height/100)) | round}}
-													</td>
+			<td ng-if = "!item.weight.includes('-') && !item.height.includes('-')" style="border:none">
+			    BMI: {{item.weight/((item.height/100)*(item.height/100)) | round}}
+			</td>
                         <td style="border:none">
                             Sp02: {{item.o2sat}}%
                         </td>
                         <td style="border:none">
-                            BP: {{item.systolicBP}} / {{item.diastolicBP}}
+                            BP: {{item.systolicBP}}/{{item.diastolicBP}}
                         </td>
                         <td style="border:none">
                             HR: {{item.pulse}}
+                        </td>
+			<td style="border:none">
+                            RR: {{item.RR}}
                         </td>
 		 </tr>
         </table>
@@ -104,7 +104,10 @@ recentVisitFactory.fetchVisitDetails(visitId).then(function(data) {
 				                                        }
 				                                        if(value.display.includes('Pulse')){
 				                                                answers.pulse = Number(value.display.slice(7,value.display.length));
-				                                        }
+									}
+									if(value.display.includes('Respiratory rate')){
+										answers.RR = Number(value.display.slice(17,value.display.length));
+									}
 								   })
 							      \$scope.vitalsData.push(answers);
 										}, function(response) {
