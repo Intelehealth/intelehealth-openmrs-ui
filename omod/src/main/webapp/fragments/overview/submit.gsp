@@ -1,12 +1,15 @@
 <%
-    ui.includeCss("intelehealth", "overview/pacifico.css")
+    ui.includeCss("intelehealth", "overview/youthness.css")
+    ui.includeCss("intelehealth", "overview/arty.css")
+    ui.includeCss("intelehealth", "overview/asem.css")
 %>
 <div id="sign" ng-controller = "SubmitController">
 <br>
 	<div class="info-body" ng-cloak>
     <br/>  
         <div align="center">
-        <h4 style="font-size:25px; font-family:{{font}};">{{text}}</h4>
+        <h4 ng-if="font == 'Arty'" style="font-size:85px; font-family:{{font}};">{{text}}</h4>
+        <h4 ng-if="font != 'Arty'" style="font-size:35px; font-family:{{font}};">{{text}}</h4>
         <button class='confirm' ng-click="submit()">Sign and Submit</button>
         </div>
       <div align ="center">

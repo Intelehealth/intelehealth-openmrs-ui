@@ -114,7 +114,6 @@ recentVisits.filter('vitalsDate', function() {
 								answers.RR = Number(value.display.slice(17,value.display.length));
 						}
 									 })
-									 console.log(answers)
 									 $scope.vitalsData.push(answers);
 								 }, function(error){
 									 console.log("Error");
