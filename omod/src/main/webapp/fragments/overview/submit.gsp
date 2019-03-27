@@ -31,7 +31,32 @@ var app = angular.module('Submit', ['ngAnimate', 'ngResource', 'EncounterModule'
   'recentVisit', 'ui.bootstrap','ui.carousel'])
 
 app.controller('SubmitController', function(\$scope, \$http, recentVisitFactory, EncounterFactory, \$timeout) {
-        \$scope.submit = function() {
+    //Sign and Sumbit button
+    \$scope.submit = function() {
+        
+    var promiseuuid = EncounterFactory.postEncounter().then(function(response){
+    return response;
+    });
+    promiseuuid.then(function(x){
+    \$scope.uuid = x;
+    //GETing encounter provider value
+    var user = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/provider?user=" + \$scope.uuid;
+    \$http.get(user).then(function(response){
+    angular.forEach(response.data.results, function(v, k){
+      var providerUUID = v.uuid;
+      var signRequest = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/provider/" + providerUUID + "/attribute";
+            \$http.get(signRequest).then(function(response){
+                if(response.data.results.length != 0){
+                  angular.forEach(response.data.results, (res) => {
+                    var display = res.display;
+                    if(display.match("Font of sign") !== null){
+                      \$scope.font = res.value
+                    }
+                    if(display.match("Text of sign") !== null){
+                      \$scope.text = res.value
+                      
+        //post Visit Complete encounter
+
          var patient = "${ patient.uuid }";
          var date2 = new Date();
          \$scope.isLoading = true;
@@ -46,7 +71,7 @@ app.controller('SubmitController', function(\$scope, \$http, recentVisitFactory,
           angular.forEach(\$scope.visitEncounters, function(value, key){
             var encounter = value.display;
             if(encounter.match("Visit Complete") !== null) {
-       //This stores the value of encounter we got from response into the encounterValue object in Scripts-> EncounterService
+            //This stores the value of encounter we got from response into the encounterValue object in Scripts-> EncounterService
             EncounterFactory.encounterValue = value.uuid;
             isSeenPresent = true;
             alert("Visit Already Completed");
@@ -78,47 +103,24 @@ app.controller('SubmitController', function(\$scope, \$http, recentVisitFactory,
                           encounterDatetime: date2
                         };
                                            
-\$http.post(url1, JSON.stringify(json)).then(function(response){
-      \$scope.statuscode1 = "Visit Complete";
-       // On success response store the response uuid into the encounter object
-       //This stores the value of encounter we got from response into the encounterValue object in Scripts-> EncounterService
-      EncounterFactory.encounterValue = response.data.uuid;
-        }, function(response){
-          \$scope.statuscode1 = "Failed to create Encounter";
-          });
-
-          
-        });
-    },function(response){
-        console.log("Get user uuid Failed!");
-      });
-          });
-        }
-      }, function(error) {
-    console.log(error);
-    }); 
-
-    var promiseuuid = EncounterFactory.postEncounter().then(function(response){
-    return response;
-    });
-    promiseuuid.then(function(x){
-    \$scope.uuid = x;
-    //GETing encounter provider value
-    var user = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/provider?user=" + \$scope.uuid;
-    \$http.get(user).then(function(response){
-    angular.forEach(response.data.results, function(v, k){
-      var providerUUID = v.uuid;
-      var signRequest = "/" + OPENMRS_CONTEXT_PATH + "/ws/rest/v1/provider/" + providerUUID + "/attribute";
-            \$http.get(signRequest).then(function(response){
-                if(response.data.results.length != 0){
-                  angular.forEach(response.data.results, (res) => {
-                    var display = res.display;
-                    if(display.match("Font of sign") !== null){
-                      \$scope.font = res.value
-                    }
-                    if(display.match("Text of sign") !== null){
-                      \$scope.text = res.value
-                    }
+                        \$http.post(url1, JSON.stringify(json)).then(function(response){
+                        \$scope.statuscode1 = "Visit Complete";
+                        // On success response store the response uuid into the encounter object
+                        //This stores the value of encounter we got from response into the encounterValue object in Scripts-> EncounterService
+                        EncounterFactory.encounterValue = response.data.uuid;
+                          }, function(response){
+                          \$scope.statuscode1 = "Failed to create Encounter";
+                          });
+                          });
+                          },function(response){
+                          console.log("Get user uuid Failed!");
+                          });
+                        });
+                      }
+                    }, function(error) {
+                  console.log(error);
+                }); 
+                }
                   })
                 }else{
                   if (window.confirm('Your signature is not setup! If you click "Ok" you would be redirected . Cancel will load this website ')) 
